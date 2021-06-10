@@ -39,6 +39,7 @@ def enter_new_players(player):
 	ranking = input("\nSon rang: ")
 	return name, surname, date_of_birth, sex, ranking
 
+test
 
 #class 1er Tour:
  #   trie les joueurs par classement

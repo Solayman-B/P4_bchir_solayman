@@ -6,7 +6,7 @@ date = "09/09/2021" # input("\ndate du tournoi: ")
 
 print(f"\nTrès bien le nouveau tournoi {tournament}, à lieu à {location}, en date du {date}")
 
-
+test
 
 #print(list des match)
 

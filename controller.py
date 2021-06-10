@@ -10,5 +10,7 @@ for player in players:
 	for p in new_player:
 		save_a_player(p) # modifier par enregustrement dans tinydb
 
+test
+
 #1er tour
 
