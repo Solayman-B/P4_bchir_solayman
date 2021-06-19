@@ -1,20 +1,23 @@
-class Tournoi:
-    def __init__(self, tournament, location, date):
-        self.tournament = tournament
-        self.location = location
-        self.date = date
-        self.number_of_turns = 4
-        self.round = ""
-        self.time_control = ""
-        self.description = ""
+time_control =["bullet", "blitz", "coup rapide"]
 
+class Tournament:
 
-def number_of_players(p = 8): #remplacer par 8
-    players = []
-    for i in range(1,p+1):
-        players.append("player" + str(i))
-    return players
+		number = 0
+		list_of_players = []
+		ranking_list = []
+		ranked_players = []
+		tour_1 = []
+		groupe_1 = []
+		groupe_2 = []
 
+		def __init__(self, date):
+			self.tournament_name = "nom du tournoi" #input("\nnom du tournoi: ")
+			self.location = "lieu du tournoi" #input("\nlieu du tournoi: ")
+			self.date = date
+			self.round = 4
+			self.time_control = "blitz" #time_control[int(input("\nEntrez le chiffre correspondant à la méthode de contrôle du temps:\n\n1. bullet\n\n2. blitz\n\n3. coup rapide\n\n"))-1]
+			self.description = ""
+			Tournament.number += 1
 
 class Player:
     def __init__(self, name, surname, date_of_birth, sex, ranking):
@@ -24,12 +27,10 @@ class Player:
         self.sex = sex
         self.ranking = ranking
 
-list_of_players = []
-ranking_list = []
-ranked_players = []
-tour_1 = []
-groupe_1 = []
-groupe_2 = []
+
+#tournament_info =
+
+
 #class 1er Tour:
  #   trie les joueurs par classement
   #  divise les joueurs en 2 moitié (supérieur et inférieur)
