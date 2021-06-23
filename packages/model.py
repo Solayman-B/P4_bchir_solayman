@@ -4,11 +4,10 @@ class Tournament:
 
 		number = 0
 		list_of_players = []
-		ranking_list = []
-		ranked_players = []
-		tour_1 = []
+		round_1 = []
 		groupe_1 = []
 		groupe_2 = []
+		nb_match = 0
 
 		def __init__(self, date):
 			self.tournament_name = "nom du tournoi" #input("\nnom du tournoi: ")
@@ -20,12 +19,15 @@ class Tournament:
 			Tournament.number += 1
 
 class Player:
-    def __init__(self, name, surname, date_of_birth, sex, ranking):
-        self.name = name
-        self.surname = surname
-        self.date_of_birth = date_of_birth
-        self.sex = sex
-        self.ranking = ranking
+	ranking_list = []
+	ranked_players = []
+
+	def __init__(self, name, surname, date_of_birth, sex, ranking):
+		self.name = name
+		self.surname = surname
+		self.date_of_birth = date_of_birth
+		self.sex = sex
+		self.ranking = ranking
 
 
 #tournament_info =
