@@ -38,8 +38,30 @@ class NewGameController:
 		self.view = NewGameView()
 
 	def __call__(self):
-		
+		# entrer info tournoi
+		for i in range (1,5):
 
+			if i == 8:
+				try:
+					if int(info) > 1:
+						self.tournament_info[3] = time.strftime(f"Du %d/%m/%Y",
+																time.localtime(time) + time.strftime(f"au %d/%m/%Y",
+																									 time.localtime(
+																										 time + nb_days * 86400)))
+					else:
+						self.tournament_info[3] = time.strftime("Le %d/%m/%Y", time.localtime(time))
+				except ValueError:
+					print("ouh la la!")
+
+			info = self.view.get_user_info(i)
+			self.tournament.enter_informations(i, info)
+		print(self.tournament.nb_days)
+		if int(self.tournament.nb_days) > 1:
+			info = time.strftime("Du %d/%m/%Y", time.localtime(time) + time.strftime(f"au %d/%m/%Y", time.localtime(time + self.tournament.nb_days * 86400)))
+		else:
+			info = time.strftime("Le %d/%m/%Y", time.localtime(time))
+		self.tournament.enter_informations(5, info)
+		print(self.tournament.tournament_info)
 
 
 
@@ -52,18 +74,15 @@ class RankingUpdateController:
 	def __call__(self):
 		print("ranking controller")
 
-def is_input_ok(input,number_of_choices):
-	"""Vérifie que l'entrée utilisateur corresponde bien à un choix proposé et retourne la valeur True si c'est le cas. Sinon retourne False et demande de ressaisir une entrée valide."""
-	while True:
-		try:
-			int(input) in range(1, number_of_choices+1)
-			return True
-			break
-		except ValueError:
-			#ErrorMessagePrinting(input)
-			return False
-	#if input.isdigit() and int(input) in range(1,number_of_choices+1):
-	#	return True
-	#else:
-	#	print(f"Votre saisie \"{input}\", ne correspond pas aux choix indiqués. Veuillez rééssayer svp.")
-	#	return False
+
+
+
+
+
+
+
+
+		#if input.isdigit() == True:
+		#	return True
+		#else:
+		#	return False

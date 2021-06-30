@@ -3,6 +3,13 @@ class ErrorMessagePrinting:
 		"""imprime un message d'erreur qui demande à l'utilisateur de saisir une entrée valide"""
 		self.message = print(f"Votre saisie \"{input}\", ne correspond pas aux choix indiqués. Veuillez rééssayer svp.")
 
+
+def is_digit(info):
+	"""Vérifie que l'entrée utilisateur corresponde bien à un chiffre et retourne la valeur True si c'est le cas. Sinon retourne False et demande de ressaisir une entrée valide."""
+	while info.isdigit() == False:
+		info = input("\nVeuillez entrer un chiffre svp: ")
+	return int(info)
+
 class HomeMenuView:
 	def __init__(self, menu):
 		self.menu = menu
@@ -23,7 +30,19 @@ class HomeMenuView:
 				return self.menu[choice]
 
 class NewGameView:
-	pass
+	def __init__(self):
+		pass
+
+	def get_user_info(self, i):
+		if i == 1:
+			info = input("\nNom du tournoi: ")
+		elif i == 2:
+			info = is_digit(input("\nDurée en jours du tournoi: "))
+		elif i == 3:
+			info = input("\nLieu du tournoi: ")
+		elif i == 4:
+			info = is_digit(input("\nNombre de joueurs: "))
+		return info
 
 
 def is_input_ok(input,number_of_choices):
@@ -50,7 +69,7 @@ def start_or_continue_tournament():
 		return int(start_or_continue_tournament_input)
 
 def enter_tournament_info(tournament_info, date):
-	tournament_info.append(input("\nnom du tournoi: "))
+	tournament_info.append()
 	tournament_info.append(input("\nlieu du tournoi: "))
 	date_input = input(f"\nla date du tournoi est le {date}, tapez \'v\' pour valider sinon tapez \'m\' pour modifier: ")
 	if date_input.lower() == v:

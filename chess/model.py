@@ -1,14 +1,24 @@
-
+import time
 
 class Tournament:
-	id = 0
 	def __init__(self):
-		Tournament.id += 1
-		self.name =""
+		self.name = ""
 		self.nb_days = ""
-		self.date = ""
 		self.location = ""
 		self.nb_participants = ""
+		self.time = time.time()
+		self.date = ""
+		self.tournament_info = {}
+
+	def enter_informations(self, i, info):
+		self.tournament_info[i] = info
+
+
+
+
+	#def save_informations(self, name, nb_days, date, location, nb_participants):
+	#	self.tournament_info = {"nom du tournoi: " : name, "nombre de jours du tournoi: " : nb_days, "date du tournoi: ": date, "lieu du tournoi: " : location, "nombre de participants: ": nb_participants}
+
 
 class Players:
 	id = 0
