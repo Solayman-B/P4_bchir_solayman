@@ -1,6 +1,6 @@
 from view import *
 from model import *
-import time
+import datetime
 from random import random
 
 
@@ -36,33 +36,34 @@ class NewGameController:
 	def __init__(self):
 		self.tournament = Tournament()
 		self.view = NewGameView()
+		self.tournament.starting_date = datetime.datetime.now().strftime('%d/%m/%Y')
 
 	def __call__(self):
 		# entrer info tournoi
-		for i in range (1,5):
 
-			if i == 8:
-				try:
-					if int(info) > 1:
-						self.tournament_info[3] = time.strftime(f"Du %d/%m/%Y",
-																time.localtime(time) + time.strftime(f"au %d/%m/%Y",
-																									 time.localtime(
-																										 time + nb_days * 86400)))
-					else:
-						self.tournament_info[3] = time.strftime("Le %d/%m/%Y", time.localtime(time))
-				except ValueError:
-					print("ouh la la!")
-
-			info = self.view.get_user_info(i)
-			self.tournament.enter_informations(i, info)
-		print(self.tournament.nb_days)
-		if int(self.tournament.nb_days) > 1:
-			info = time.strftime("Du %d/%m/%Y", time.localtime(time) + time.strftime(f"au %d/%m/%Y", time.localtime(time + self.tournament.nb_days * 86400)))
+		self.tournament.name, self.tournament.nb_days, self.tournament.location, self.tournament.note, = self.view.get_user_info(self.tournament)
+		if self.tournament.nb_days > 1:
+			self.tournament.ending_date = (datetime.datetime.now() + datetime.timedelta(days=self.tournament.nb_days)).strftime('%d/%m/%Y')
+			self.tournament.date = f"du {self.tournament.starting_date} au {self.tournament.ending_date}"
 		else:
-			info = time.strftime("Le %d/%m/%Y", time.localtime(time))
-		self.tournament.enter_informations(5, info)
-		print(self.tournament.tournament_info)
+			self.tournament.date = self.tournament.starting_date
+		print(self.tournament.name, self.tournament.location, self.tournament.date)
+		return PlayersController
 
+class PlayersController:
+	def __call__(self):
+		Players.nb_players = PlayersView.nb_players(self, Players.nb_players)
+		players = [Players() for i in range(Players.nb_players)]
+		for player in players:
+			Players.list.append(PlayersView.enter_new_player(self, player, Players.id))
+
+		print(f"{Players.list} Players.list")
+		# trie par classement des joueurs
+		#RankingController(Players.list, Players.ranking, Players.ranking[0])
+
+class RankingController:
+	def __call__(self, list, id, indice):
+		sorted(list, key = lambda id: indice)
 
 
 class ResumeGameController:
@@ -73,13 +74,6 @@ class ResumeGameController:
 class RankingUpdateController:
 	def __call__(self):
 		print("ranking controller")
-
-
-
-
-
-
-
 
 
 		#if input.isdigit() == True:

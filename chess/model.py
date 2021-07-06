@@ -1,35 +1,31 @@
-import time
+
 
 class Tournament:
 	def __init__(self):
-		self.name = ""
-		self.nb_days = ""
-		self.location = ""
-		self.nb_participants = ""
-		self.time = time.time()
-		self.date = ""
-		self.tournament_info = {}
-
-	def enter_informations(self, i, info):
-		self.tournament_info[i] = info
-
-
-
-
-	#def save_informations(self, name, nb_days, date, location, nb_participants):
-	#	self.tournament_info = {"nom du tournoi: " : name, "nombre de jours du tournoi: " : nb_days, "date du tournoi: ": date, "lieu du tournoi: " : location, "nombre de participants: ": nb_participants}
+		self.name = str()
+		self.nb_days = int()
+		self.location = str()
+		self.time = None
+		self.starting_date = None
+		self.ending_date = None
+		self.note = str()
 
 
 class Players:
 	id = 0
+	nb_players = int()
+	list = []
 	def __init__(self):
+		self.name = str()
+		self.surname = str()
+		self.sex = str()
+		self.birthdate = None
+		self.ranking = int()
+		self.point = float()
 		self.id += 1
-		self.name = ""
-		self.surname = ""
-		self.sex = ""
-		self.birthdate = ""
-		self.ranking = ""
-		self.point = ""
+
+class Ranking:
+	pass
 
 class MenuEntry:
 	def __init__(self, option, handler):
@@ -70,6 +66,6 @@ class Rounds:
 
 class TimeControl:
 	def __init__(self):
-		self.blitz = ""
-		self.bullet = ""
-		self.rapid = ""
+		self.blitz = str()
+		self.bullet = str()
+		self.rapid = str()
