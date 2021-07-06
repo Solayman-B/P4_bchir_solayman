@@ -21,7 +21,7 @@ class Players:
 		self.sex = str()
 		self.birthdate = None
 		self.ranking = int()
-		self.point = float()
+		self.points = float()
 		self.id += 1
 
 class Ranking:

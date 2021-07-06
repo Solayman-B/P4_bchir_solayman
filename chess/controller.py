@@ -1,7 +1,7 @@
+from operator import itemgetter
 from view import *
 from model import *
 import datetime
-from random import random
 
 
 class ApplicationController:
@@ -55,15 +55,15 @@ class PlayersController:
 		Players.nb_players = PlayersView.nb_players(self, Players.nb_players)
 		players = [Players() for i in range(Players.nb_players)]
 		for player in players:
-			Players.list.append(PlayersView.enter_new_player(self, player, Players.id))
+			Players.list.append(PlayersView.enter_new_player(self, player))
 
 		print(f"{Players.list} Players.list")
 		# trie par classement des joueurs
-		#RankingController(Players.list, Players.ranking, Players.ranking[0])
+		RankingController.rank_this(self, Players.list, 4, 5)
 
 class RankingController:
-	def __call__(self, list, id, indice):
-		sorted(list, key = lambda id: indice)
+	def rank_this(self, list, points, ranking):
+		print(sorted(list, key=itemgetter(points, ranking)))
 
 
 class ResumeGameController:

@@ -1,4 +1,4 @@
-from utils import is_digit
+from utils import *
 
 class HomeMenuView:
 	def __init__(self, menu):
@@ -25,9 +25,9 @@ class NewGameView:
 
 	def get_user_info(self, tournament):
 
-		tournament.name = input("\nNom du tournoi: ")
-		tournament.nb_days = is_digit(input("\nDurée en jours du tournoi: "))
-		tournament.location = input("\nLieu du tournoi: ")
+		tournament.name = check_input(input("\nNom du tournoi: "),"")
+		tournament.nb_days = check_input(input("\nDurée en jours du tournoi: "), int)
+		tournament.location = check_input(input("\nLieu du tournoi: "), "")
 		tournament.note = input("\nAjouter une remarque ou tapez 'Enrée' pour continuer ")
 		return tournament.name, tournament.nb_days, tournament.location, tournament.note
 
@@ -35,17 +35,18 @@ class NewGameView:
 class PlayersView:
 	# nombre de joueurs
 	def nb_players(self, nb_players):
-		nb_players = is_digit(input("\nCombien de joueurs voulez vous ajouter ? "))
+		nb_players = check_input(input("\nCombien de joueurs voulez vous ajouter ? "), int)
 		return nb_players
 
 	# ajouter un nouveau joueur
 	def enter_new_player(self, player):
-		player.name = input(f"\nEntrez le nom du joueur: ")
-		player.surname = input("\nSon prénom: ")
-		player.date_of_birth = input("\nSa date de naissance: ")
-		player.sex = input("\nSon sexe: ")
-		player.ranking = is_digit(input("\nSon rang: "))
-		return player.name, player.surname, player.date_of_birth, player.sex, player.ranking
+		player.name = check_input(input(f"\nEntrez le nom du joueur: "), "")
+		player.surname = check_input(input("\nSon prénom: "),"")
+		player.date_of_birth = check_input(input("\nSa date de naissance sous la forme JJ/MM/AAAA: "), "")
+		player.sex = check_input(input("\nSon sexe 'H' ou 'F': "), "h")
+		player.ranking = check_input(input("\nSon rang: "), int)
+		player.points = 0.0
+		return player.name, player.surname, player.date_of_birth, player.sex, player.points, player.ranking
 
 #print(list des match)
 def round_1 (a,b, i, color, anticolor):
