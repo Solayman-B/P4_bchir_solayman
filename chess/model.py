@@ -69,3 +69,7 @@ class TimeControl:
 		self.blitz = str()
 		self.bullet = str()
 		self.rapid = str()
+
+class Match:
+	def __init__(self):
+		self.list = []

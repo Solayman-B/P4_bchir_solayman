@@ -25,27 +25,27 @@ class NewGameView:
 
 	def get_user_info(self, tournament):
 
-		tournament.name = check_input(input("\nNom du tournoi: "),"")
-		tournament.nb_days = check_input(input("\nDurée en jours du tournoi: "), int)
-		tournament.location = check_input(input("\nLieu du tournoi: "), "")
-		tournament.note = input("\nAjouter une remarque ou tapez 'Enrée' pour continuer ")
+		tournament.name = "Acacias"# check_input(input("\nNom du tournoi: "),"")
+		tournament.nb_days = 2# check_input(input("\nDurée en jours du tournoi: "), int)
+		tournament.location = "Paris"# check_input(input("\nLieu du tournoi: "), "")
+		tournament.note = ""# input("\nAjouter une remarque ou tapez 'Enrée' pour continuer ")
 		return tournament.name, tournament.nb_days, tournament.location, tournament.note
 
 
 class PlayersView:
 	# nombre de joueurs
 	def nb_players(self, nb_players):
-		nb_players = check_input(input("\nCombien de joueurs voulez vous ajouter ? "), int)
+		nb_players = 8 #check_input(input("\nCombien de joueurs voulez vous ajouter ? "), int)
 		return nb_players
 
 	# ajouter un nouveau joueur
 	def enter_new_player(self, player):
-		player.name = check_input(input(f"\nEntrez le nom du joueur: "), "")
-		player.surname = check_input(input("\nSon prénom: "),"")
-		player.date_of_birth = check_input(input("\nSa date de naissance sous la forme JJ/MM/AAAA: "), "")
-		player.sex = check_input(input("\nSon sexe 'H' ou 'F': "), "h")
-		player.ranking = check_input(input("\nSon rang: "), int)
+		player.name = ""#check_input(input(f"\nEntrez le nom du joueur: "), "")
+		player.surname = ""#check_input(input("\nSon prénom: "),"")
+		player.date_of_birth = ""#check_input(input("\nSa date de naissance sous la forme JJ/MM/AAAA: "), "")
+		player.sex = ""#check_input(input("\nSon sexe 'H' ou 'F': "), "h")
 		player.points = 0.0
+		player.ranking = ""#check_input(input("\nSon rang: "), int)
 		return player.name, player.surname, player.date_of_birth, player.sex, player.points, player.ranking
 
 #print(list des match)
