@@ -43,20 +43,14 @@ class PlayersView:
 		player.name = ""#check_input(input(f"\nEntrez le nom du joueur: "), "")
 		player.surname = ""#check_input(input("\nSon prénom: "),"")
 		player.date_of_birth = ""#check_input(input("\nSa date de naissance sous la forme JJ/MM/AAAA: "), "")
-		player.sex = ""#check_input(input("\nSon sexe 'H' ou 'F': "), "h")
+		player.sex = ""#check_input(input("\nSon sexe 'H' ou 'F': "), "H")
 		player.points = 0.0
 		player.ranking = ""#check_input(input("\nSon rang: "), int)
-		return player.name, player.surname, player.date_of_birth, player.sex, player.points, player.ranking
-
-#print(list des match)
-def round_1 (a,b, i, color, anticolor):
-	print(f"match {i}. {a} avec les {color} affrontera {b} avec les {anticolor}")
+		return player.name, player.surname, player.date_of_birth, player.sex, player.points, player.ranking, player.id
 
 
 #resultats = input()
-def enter_results(u):
-	enter_results_input = input(f"\nRentrez les chiffres correspondants aux résultats du match {u[0]} vs {u[2]}\n\n1. pour la victoire de {u[0]} \n\n2. en cas de match nul\n\n3. pour la victoire de {u[2]}\n\n")
-	if is_input_ok(enter_results_input, 3) == False:
-		enter_results(u)
-	else:
-		return int(enter_results_input)
+class ResultsView:
+	def enter_results(i):
+		results = check_input(input(f"\nJoueur :{i}  \n\nEntrez 'V' pour une victoire, 'N' pour un match nul, et 'D' pour une défaite: "), "V")
+		return results

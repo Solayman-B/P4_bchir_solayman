@@ -9,7 +9,11 @@ def check_input(info, key):
 		while info.isdigit() == False:
 			info = input("\nVeuillez entrer un chiffre svp: ")
 		return int(info)
-	elif key == "h":
-		while info.lower() != "h" and info.lower() != "f":
-			info = input("\nVeillez entrer 'h' ou 'f' svp: ")
+	elif key == "H":
+		while info.upper() != "H" and info.upper() != "F":
+			info = input("\nVeillez entrer 'H' ou 'F' svp: ")
+		return info
+	elif key == "V":
+		while info.upper() != "V" and info.upper() != "N" and info.upper() != "D":
+			info = input("\nVeillez entrer 'V', 'N' ou 'D' svp: ")
 		return info

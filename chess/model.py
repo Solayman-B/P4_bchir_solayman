@@ -1,4 +1,4 @@
-
+from random import random
 
 class Tournament:
 	def __init__(self):
@@ -16,16 +16,18 @@ class Players:
 	nb_players = int()
 	list = []
 	def __init__(self):
+		Players.id += 1
 		self.name = str()
 		self.surname = str()
 		self.sex = str()
 		self.birthdate = None
 		self.ranking = int()
 		self.points = float()
-		self.id += 1
+		self.id = Players.id
+
 
 class Ranking:
-	pass
+	ranked_list = []
 
 class MenuEntry:
 	def __init__(self, option, handler):
@@ -73,3 +75,14 @@ class TimeControl:
 class Match:
 	def __init__(self):
 		self.list = []
+
+class Color:
+	def random(self):
+		if random() < 0.5:
+			color = "blancs"
+		else:
+			color = "noirs"
+		return color
+
+class Results:
+	pass
