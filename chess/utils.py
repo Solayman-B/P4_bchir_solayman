@@ -13,6 +13,10 @@ def check_input(info, key):
 		while info.upper() != "H" and info.upper() != "F":
 			info = input("\nVeillez entrer 'H' ou 'F' svp: ")
 		return info
+	elif key == "T":
+		while info.upper() != "BT" and info.upper() != "BZ" and info.upper() != "CR":
+			info = input("\nVeillez entrer 'BT', 'BZ' ou 'CR' svp: ")
+		return info
 	elif key == "V":
 		while info.upper() != "V" and info.upper() != "N" and info.upper() != "D":
 			info = input("\nVeillez entrer 'V', 'N' ou 'D' svp: ")

@@ -42,13 +42,13 @@ class NewGameController:
 	def __call__(self):
 		# entrer info tournoi
 
-		self.tournament.name, self.tournament.nb_days, self.tournament.location, self.tournament.note, = self.view.get_user_info(self.tournament)
+		self.tournament.name, self.tournament.nb_days, self.tournament.location, self.tournament.time_control, self.tournament.note, = self.view.get_user_info(self.tournament)
 		if self.tournament.nb_days > 1:
 			self.tournament.ending_date = (datetime.datetime.now() + datetime.timedelta(days=self.tournament.nb_days)).strftime('%d/%m/%Y')
 			self.tournament.date = f"du {self.tournament.starting_date} au {self.tournament.ending_date}"
 		else:
 			self.tournament.date = self.tournament.starting_date
-		print(self.tournament.name, self.tournament.location, self.tournament.date)
+		print(self.tournament.name, self.tournament.location, self.tournament.date, self.tournament.time_control, "\n")
 		return PlayersController
 
 class PlayersController:

@@ -28,8 +28,9 @@ class NewGameView:
 		tournament.name = "Acacias"# check_input(input("\nNom du tournoi: "),"")
 		tournament.nb_days = 2# check_input(input("\nDurée en jours du tournoi: "), int)
 		tournament.location = "Paris"# check_input(input("\nLieu du tournoi: "), "")
+		tournament.time_control = "blitz" # check_input(input("\nContrôle du temps de jeu:\n\nEntrez 'BT' pour bullet, 'BZ' pour blitz, 'CR' pour coup rapide: "), 'T')
 		tournament.note = ""# input("\nAjouter une remarque ou tapez 'Enrée' pour continuer ")
-		return tournament.name, tournament.nb_days, tournament.location, tournament.note
+		return tournament.name, tournament.nb_days, tournament.location, tournament.time_control, tournament.note
 
 
 class PlayersView:

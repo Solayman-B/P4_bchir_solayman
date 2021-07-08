@@ -8,6 +8,7 @@ class Tournament:
 		self.time = None
 		self.starting_date = None
 		self.ending_date = None
+		self.time_control = str()
 		self.note = str()
 
 
@@ -65,12 +66,6 @@ class Rounds:
 		self.nb_rounds = 4
 		self.rounds_name = f"round{Rounds.number}"
 		Rounds.number +=1
-
-class TimeControl:
-	def __init__(self):
-		self.blitz = str()
-		self.bullet = str()
-		self.rapid = str()
 
 class Match:
 	def __init__(self):
