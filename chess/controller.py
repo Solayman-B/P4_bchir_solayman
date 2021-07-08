@@ -54,30 +54,33 @@ class NewGameController:
 class PlayersController:
 	"""enter the players informations"""
 	def __call__(self):
-		match = Match()
-		Players.nb_players = PlayersView.nb_players(self, Players.nb_players)
-		players = [Players() for i in range(Players.nb_players)]
+		model_player = Players()
+		view_player = PlayersView()
+		model_player.nb_players = view_player.nb_players(model_player.nb_players)
+		players = [Players() for i in range(model_player.nb_players)]
 		for player in players:
-			Players.list.append(PlayersView.enter_new_player(self, player))
+			model_player.list.append(list(view_player.enter_new_player(player)))
 
 		# trie par classement des joueurs
 		"""TEST SUPPRIMER LA LIGNE 65 QUI MODIFIE LA LISTE 'Players.list'"""
-		Players.list = [("Delafontaine", "Jean", "01/06/1991", "h", 0, 25, 1), ("Sarkozy", "Nicolas", "01/07/1991", "h", 0, 32, 2), ("Mouse", "Mickey", "01/08/1991", "h", 0, 21, 3), ("Éléphant", "Babar", "01/09/1991", "h", 0, 14, 4), ("Bond", "James", "01/10/1991", "h", 0, 85, 5), ("Neige", "Anna", "01/11/1991", "f", 0, 66, 6), ("Baba", "Ali", "01/12/1991", "h", 0, 47, 7), ("Ourson", "Winnie", "01/01/1991", "h", 0, 48, 8)]
+		model_player.list = [["Delafontaine", "Jean", "01/06/1991", "h", 0, 25, 1], ["Sarkozy", "Nicolas", "01/07/1991", "h", 0, 32, 2], ["Mouse", "Mickey", "01/08/1991", "h", 0, 21, 3], ["Éléphant", "Babar", "01/09/1991", "h", 0, 14, 4], ["Bond", "James", "01/10/1991", "h", 0, 85, 5], ["Neige", "Anna", "01/11/1991", "f", 0, 66, 6], ["Baba", "Ali", "01/12/1991", "h", 0, 47, 7], ["Ourson", "Winnie", "01/01/1991", "h", 0, 48, 8]]
 		"""TEST SUPPRIMER LA LIGNE 65 QUI MODIFIE LA LISTE 'Players.list'"""
-		RankingController.rank_this(self, Players.list, 4, 5)
+		ranking_controller = RankingController()
+		# 								points [4] ranking [5]
+		ranking_controller.rank_this(model_player.list, 4, 5)
 
 
 class RankingController:
 	"""sort the players and split them into two lists"""
-	def rank_this(self, list, points, ranking):
-		Ranking.ranked_list = sorted(list, key=itemgetter(points, ranking))
-		lenth_list = len(Ranking.ranked_list) // 2
-		list_1 = Ranking.ranked_list[:lenth_list]
-		list_2 = Ranking.ranked_list[lenth_list:]
-		PairsOfPlayers.generating_pairs(self,list_1,list_2)
+	def rank_this(self,list, points, ranking):
+		round_1 = Ranking()
+		round_1.ranked_list = sorted(list, key=itemgetter(points, ranking))
+		lenth_list = len(round_1.ranked_list) // 2
+		list_1 = round_1.ranked_list[:lenth_list]
+		list_2 = round_1.ranked_list[lenth_list:]
+		self.generating_pairs(list_1,list_2)
+		self.enter_results(round_1.ranked_list)
 
-class PairsOfPlayers:
-	"""generating pairs of players"""
 	def generating_pairs(self,list_1, list_2):
 		match = Match()
 		color = Color()
@@ -87,21 +90,21 @@ class PairsOfPlayers:
 			match.list.append(i)
 			print(f"Match {z} {x[0]} {x[1]} avec les {color.random()} affrontera {y[0]} {y[1]}")
 			z += 1
-		ResultsController.enter_results(self)
 
-class ResultsController:
-	def enter_results(self):
-		for i in Ranking.ranked_list:
-			new_list = []
-			results =ResultsView.enter_results(i)
+	def enter_results(self,list):
+		z = 0
+		for i in list:
+			results = ResultsView.enter_results(i)
+			a = list[z].pop(4)
 			if results == "V":
-				i[4] += 1
-				new_list.append(i)
+				list[z].insert(4, 1 + a)
 			elif results == "N":
-				i[4] += 0.5
-				new_list.append(i)
-			Ranking.ranked_list = new_list
-			print(Ranking.ranked_list)
+				list[z].insert(4, 0.5 + a)
+			else:
+				list[z].insert(4, 0 + a)
+			z += 1
+
+		print(list)
 
 class ResumeGameController:
 	def __call__(self):

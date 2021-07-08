@@ -16,7 +16,6 @@ class Players:
 	nb_players = int()
 	list = []
 	def __init__(self):
-		Players.id += 1
 		self.name = str()
 		self.surname = str()
 		self.sex = str()
@@ -24,6 +23,7 @@ class Players:
 		self.ranking = int()
 		self.points = float()
 		self.id = Players.id
+		Players.id += 1
 
 
 class Ranking:
