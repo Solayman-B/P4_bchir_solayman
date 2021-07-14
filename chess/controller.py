@@ -77,7 +77,6 @@ class PlayersController:
 			ranking_controller.rank_this_list(model_player.list_of_players, i, round)
 			round.finishing_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
 			round.list_of_matchs_of_this_round.clear()
-			round.list_of_players_of_this_round.clear()
 			print(f"le round {i+1} s'est terminé le {round.finishing_round}\n\n			**********\n")
 
 
@@ -95,8 +94,6 @@ class RankingController:
 			match = player_1[6], player_2[6]
 			match_view.display_match(color.random(), player_1, player_2)
 			round.list_of_matchs_of_this_round.append(match)
-			round.list_of_players_of_this_round.append(player_1)
-			round.list_of_players_of_this_round.append(player_2)
 			self.enter_results(round)
 
 
@@ -106,50 +103,38 @@ class RankingController:
 		color = Color()
 		round.ranked_list_of_players = sorted(sorted(list_of_players, key=itemgetter(5)), key=itemgetter(4), reverse= True)
 		lenth_ranked_list_of_players = len(round.ranked_list_of_players) // 2
-		sesame = "ferme toi"
 		if i == 0:
-			round.list_of_players_1 = round.ranked_list_of_players[:lenth_ranked_list_of_players]
-			round.list_of_players_2 = round.ranked_list_of_players[lenth_ranked_list_of_players:]
 			for player_1, player_2 in zip(round.ranked_list_of_players[:lenth_ranked_list_of_players],
 										  round.ranked_list_of_players[lenth_ranked_list_of_players:]):
 				#match = [player_1[6], player_1[4]], [player_2[6], player_2[4]]
 				match = player_1[6], player_2[6]
 				round.list_of_matchs_of_this_round.append(match)
-				round.list_of_players_of_this_round.append(player_1)
-				round.list_of_players_of_this_round.append(player_2)
 				match_view.display_match(color.random(), player_1[6], player_2[6])
 			self.enter_results(round)
 
 		else:
 			def play_it(match):
-				match_view.display_match(color.random(), match[0], match[1])
-				round.list_of_matchs_of_this_round.append(match)
-				round.list_of_players_of_this_round.append(match[0])
-				round.list_of_players_of_this_round.append(match[1])
-				round.list_of_tested_matchs.append(match)
-				self.enter_results(round)
+				if len(round.list_of_matchs_of_this_round) != 4:
+					match_view.display_match(color.random(), match[0], match[1])
+					round.list_of_matchs_of_this_round.append(match)
+					self.enter_results(round)
 
-			def is_match_already_played(match, match_s):
-				if match in round.list_of_played_matchs or match_s in round.list_of_played_matchs:
-					round.list_of_players_to_reintegrate.append(player_1[6])
-					round.list_of_players_to_reintegrate.append(player_2[6])
+			def is_match_already_played(player_1, player_2):
+				if (player_1, player_2) in round.list_of_played_matchs or (player_2, player_1) in round.list_of_played_matchs:
+					round.list_of_players_to_reintegrate.append(player_1)
+					round.list_of_players_to_reintegrate.append(player_2)
 				else:
-					play_it(match)
+					play_it((player_1, player_2))
 
-			for player_1, player_2 in zip(list_of_players[::2], list_of_players[1::2]):
-				if round.list_of_players_to_reintegrate:
-					p3 = round.list_of_players_to_reintegrate.pop()
-					p4 = round.list_of_players_to_reintegrate.pop()
-					match = player_1[6], p3
-					match_s = p3, player_1[6]
-					is_match_already_played(match, match_s)
-					match = player_2[6], p4
-					match_s = p4, player_2[6]
-					is_match_already_played(match, match_s)
-				else:
-					match = player_1[6], player_2[6]
-					match_s = player_2[6], player_1[6]
-					is_match_already_played(match, match_s)
+			while len(round.list_of_matchs_of_this_round) !=4:
+				for player_1, player_2 in zip(list_of_players[::2], list_of_players[1::2]):
+					if round.list_of_players_to_reintegrate:
+						p3 = round.list_of_players_to_reintegrate.pop()
+						p4 = round.list_of_players_to_reintegrate.pop()
+						is_match_already_played(player_1[6], p3)
+						is_match_already_played(player_2[6], p4)
+					else:
+						is_match_already_played(player_1[6], player_2[6])
 
 
 	def enter_results(self,round):

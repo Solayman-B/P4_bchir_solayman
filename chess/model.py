@@ -63,15 +63,9 @@ class Rounds:
 		self.starting_round = str()
 		self.finishing_round = str()
 		self.ranked_list_of_players = []
-		self.list_of_players_1 = []
-		self.list_of_players_2 = []
 		self.list_of_played_matchs = []
-		self.list_of_displayed_matchs = []
-		self.list_of_tested_matchs = []
 		self.list_of_matchs_of_this_round = []
-		self.list_of_players_of_this_round = []
 		self.list_of_players_to_reintegrate = []
-		self.reintegrate = False
 		Rounds.number += 1
 
 
