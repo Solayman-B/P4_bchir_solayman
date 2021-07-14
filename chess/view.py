@@ -1,3 +1,4 @@
+import random
 from utils import *
 
 class HomeMenuView:
@@ -13,18 +14,14 @@ class HomeMenuView:
 			# afficher le menu
 			self.display_menu()
 			# demander un choix à l'utilisateur
-			choice = input(">> ")
+			choice = "1" #input(">> ")
 			# valider le choix
 			if choice in self.menu:
 				# retourner le choix
 				return self.menu[choice]
 
 class NewGameView:
-	def __init__(self):
-		pass
-
 	def get_user_info(self, tournament):
-
 		tournament.name = "Acacias"# check_input(input("\nNom du tournoi: "),"")
 		tournament.nb_days = 2# check_input(input("\nDurée en jours du tournoi: "), int)
 		tournament.location = "Paris"# check_input(input("\nLieu du tournoi: "), "")
@@ -49,9 +46,12 @@ class PlayersView:
 		player.ranking = ""#check_input(input("\nSon rang: "), int)
 		return player.name, player.surname, player.date_of_birth, player.sex, player.points, player.ranking, player.id
 
+class MatchView:
+	def display_match(self, color, player_1,player_2):
+		print(f"Le joueur {player_1} avec les {color} affrontera le joueur {player_2} \n")
 
 #resultats = input()
 class ResultsView:
-	def enter_results(i):
-		results = check_input(input(f"\nJoueur :{i}  \n\nEntrez 'V' pour une victoire, 'N' pour un match nul, et 'D' pour une défaite: "), "V")
+	def enter_results(self,player):
+		results = random.choice("VDN") #check_input(input(f"\nJoueur :{i}  \n\nEntrez 'V' pour une victoire, 'N' pour un match nul, et 'D' pour une défaite: "), "V")
 		return results

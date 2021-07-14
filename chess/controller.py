@@ -21,15 +21,15 @@ class HomeMenuController:
 		self.view = HomeMenuView(self.menu)
 
 	def __call__(self):
-		# construire un menu
+		# build the menu
 		self.menu.add("auto", "créer un nouveau tournoi", NewGameController())
 		self.menu.add("auto", "continuer le dernier tournoi", ResumeGameController())
 		self.menu.add("auto", "mise à jour du classement", RankingUpdateController())
 
-		# la vue affiche le menu et collecte la réponse
+		# the view display the menu and get the response
 		user_choice = self.view.get_user_choice()
 
-		# retourné le controlleur associé au choix au controlleur principal
+		# Give the user choice handler
 		return user_choice.handler
 
 class NewGameController:
@@ -48,7 +48,7 @@ class NewGameController:
 			self.tournament.date = f"du {self.tournament.starting_date} au {self.tournament.ending_date}"
 		else:
 			self.tournament.date = self.tournament.starting_date
-		print(self.tournament.name, self.tournament.location, self.tournament.date, self.tournament.time_control, "\n")
+		print("\n", self.tournament.name, self.tournament.location, self.tournament.date, self.tournament.time_control, "\n")
 		return PlayersController
 
 class PlayersController:
@@ -59,52 +59,117 @@ class PlayersController:
 		model_player.nb_players = view_player.nb_players(model_player.nb_players)
 		players = [Players() for i in range(model_player.nb_players)]
 		for player in players:
-			model_player.list.append(list(view_player.enter_new_player(player)))
+			model_player.list_of_players.append(list(view_player.enter_new_player(player)))
 
 		# trie par classement des joueurs
 		"""TEST SUPPRIMER LA LIGNE 65 QUI MODIFIE LA LISTE 'Players.list'"""
-		model_player.list = [["Delafontaine", "Jean", "01/06/1991", "h", 0, 25, 1], ["Sarkozy", "Nicolas", "01/07/1991", "h", 0, 32, 2], ["Mouse", "Mickey", "01/08/1991", "h", 0, 21, 3], ["Éléphant", "Babar", "01/09/1991", "h", 0, 14, 4], ["Bond", "James", "01/10/1991", "h", 0, 85, 5], ["Neige", "Anna", "01/11/1991", "f", 0, 66, 6], ["Baba", "Ali", "01/12/1991", "h", 0, 47, 7], ["Ourson", "Winnie", "01/01/1991", "h", 0, 48, 8]]
+		model_player.list_of_players = [["Delafontaine", "Jean", "01/06/1991", "h", 0, 25, 1], ["Sarkozy", "Nicolas", "01/07/1991", "h", 0, 32, 2], ["Mouse", "Mickey", "01/08/1991", "h", 0, 21, 3], ["Éléphant", "Babar", "01/09/1991", "h", 0, 14, 4], ["Bond", "James", "01/10/1991", "h", 0, 85, 5], ["Neige", "Anna", "01/11/1991", "f", 0, 66, 6], ["Baba", "Ali", "01/12/1991", "h", 0, 47, 7], ["Ourson", "Winnie", "01/01/1991", "h", 0, 48, 8]]
 		"""TEST SUPPRIMER LA LIGNE 65 QUI MODIFIE LA LISTE 'Players.list'"""
+
+
+		"""starting the rounds of the tournament"""
 		ranking_controller = RankingController()
-		# 								points [4] ranking [5]
-		ranking_controller.rank_this(model_player.list, 4, 5)
+		round = Rounds()
+		for i in range(round.nb_rounds):
+			round.starting_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
+			print(f"le round {i+1} à débuté le {round.starting_round} \n")
+			"""sort players in two lists"""
+			ranking_controller.rank_this_list(model_player.list_of_players, i, round)
+			round.finishing_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
+			round.list_of_matchs_of_this_round.clear()
+			round.list_of_players_of_this_round.clear()
+			print(f"le round {i+1} s'est terminé le {round.finishing_round}\n\n			**********\n")
+
 
 
 class RankingController:
-	"""sort the players and split them into two lists"""
-	def rank_this(self,list, points, ranking):
-		round_1 = Ranking()
-		round_1.ranked_list = sorted(list, key=itemgetter(points, ranking))
-		lenth_list = len(round_1.ranked_list) // 2
-		list_1 = round_1.ranked_list[:lenth_list]
-		list_2 = round_1.ranked_list[lenth_list:]
-		self.generating_pairs(list_1,list_2)
-		self.enter_results(round_1.ranked_list)
 
-	def generating_pairs(self,list_1, list_2):
-		match = Match()
+	"""sort the players by points (4), and if they're equal by ranking (5), and split them into two separated lists"""
+
+	def other_rounds(self, list_of_players, round):
+		match_view = MatchView()
 		color = Color()
-		z = 1
-		for x,y in zip(list_1, list_2):
-			i = x,y
-			match.list.append(i)
-			print(f"Match {z} {x[0]} {x[1]} avec les {color.random()} affrontera {y[0]} {y[1]}")
-			z += 1
+		"""generating pairs of players in list of futures matchs and give the color wich the player will play with"""
+		for player_1, player_2 in zip(list_of_players[::2], list_of_players[1::2]):
+			#match = [player_1[6], player_1[4]], [player_2[6], player_2[4]]
+			match = player_1[6], player_2[6]
+			match_view.display_match(color.random(), player_1, player_2)
+			round.list_of_matchs_of_this_round.append(match)
+			round.list_of_players_of_this_round.append(player_1)
+			round.list_of_players_of_this_round.append(player_2)
+			self.enter_results(round)
 
-	def enter_results(self,list):
+
+
+	def rank_this_list(self,list_of_players, i, round):
+		match_view = MatchView()
+		color = Color()
+		round.ranked_list_of_players = sorted(sorted(list_of_players, key=itemgetter(5)), key=itemgetter(4), reverse= True)
+		lenth_ranked_list_of_players = len(round.ranked_list_of_players) // 2
+		sesame = "ferme toi"
+		if i == 0:
+			round.list_of_players_1 = round.ranked_list_of_players[:lenth_ranked_list_of_players]
+			round.list_of_players_2 = round.ranked_list_of_players[lenth_ranked_list_of_players:]
+			for player_1, player_2 in zip(round.ranked_list_of_players[:lenth_ranked_list_of_players],
+										  round.ranked_list_of_players[lenth_ranked_list_of_players:]):
+				#match = [player_1[6], player_1[4]], [player_2[6], player_2[4]]
+				match = player_1[6], player_2[6]
+				round.list_of_matchs_of_this_round.append(match)
+				round.list_of_players_of_this_round.append(player_1)
+				round.list_of_players_of_this_round.append(player_2)
+				match_view.display_match(color.random(), player_1[6], player_2[6])
+			self.enter_results(round)
+
+		else:
+			def play_it(match):
+				match_view.display_match(color.random(), match[0], match[1])
+				round.list_of_matchs_of_this_round.append(match)
+				round.list_of_players_of_this_round.append(match[0])
+				round.list_of_players_of_this_round.append(match[1])
+				round.list_of_tested_matchs.append(match)
+				self.enter_results(round)
+
+			def is_match_already_played(match, match_s):
+				if match in round.list_of_played_matchs or match_s in round.list_of_played_matchs:
+					round.list_of_players_to_reintegrate.append(player_1[6])
+					round.list_of_players_to_reintegrate.append(player_2[6])
+				else:
+					play_it(match)
+
+			for player_1, player_2 in zip(list_of_players[::2], list_of_players[1::2]):
+				if round.list_of_players_to_reintegrate:
+					p3 = round.list_of_players_to_reintegrate.pop()
+					p4 = round.list_of_players_to_reintegrate.pop()
+					match = player_1[6], p3
+					match_s = p3, player_1[6]
+					is_match_already_played(match, match_s)
+					match = player_2[6], p4
+					match_s = p4, player_2[6]
+					is_match_already_played(match, match_s)
+				else:
+					match = player_1[6], player_2[6]
+					match_s = player_2[6], player_1[6]
+					is_match_already_played(match, match_s)
+
+
+	def enter_results(self,round):
+		"""saving the points earned by each player during the last match"""
+		results = ResultsView()
 		z = 0
-		for i in list:
-			results = ResultsView.enter_results(i)
-			a = list[z].pop(4)
+		for player in round.ranked_list_of_players:
+			results.enter_results(player)
+			# removed old points
+			a = round.ranked_list_of_players[z].pop(4)
+			# saving new points
 			if results == "V":
-				list[z].insert(4, 1 + a)
+				round.ranked_list_of_players[z].insert(4, 1.0 + a)
 			elif results == "N":
-				list[z].insert(4, 0.5 + a)
+				round.ranked_list_of_players[z].insert(4, 0.5 + a)
 			else:
-				list[z].insert(4, 0 + a)
+				round.ranked_list_of_players[z].insert(4, 0.0 + a)
 			z += 1
-
-		print(list)
+		for match in round.list_of_matchs_of_this_round:
+			round.list_of_played_matchs.append(match)
 
 class ResumeGameController:
 	def __call__(self):
@@ -114,9 +179,3 @@ class ResumeGameController:
 class RankingUpdateController:
 	def __call__(self):
 		print("ranking controller")
-
-
-		#if input.isdigit() == True:
-		#	return True
-		#else:
-		#	return False

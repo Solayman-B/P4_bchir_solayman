@@ -1,14 +1,21 @@
+list = [(4, 7), (3, 8), (1, 6), (2, 5), (1, 2), (1, 2), (3, 4), (1, 2), (3, 4), (5, 6), (1, 2), (3, 4), (5, 6), (7, 8)]
 
+list_of_players_of_this_round = [1,2]
 
+nb_player_round = 0
 
+a = 4
+b = 7
+c = a,b
 
+if c in list:
+	print("c'est la fête")
 
+if nb_player_round < 8:
+	for player in list:
+		if player not in list_of_players_of_this_round:
+			nb_player_round += 1
 
-z=0
-list = [["Delafontaine", "Jean", "01/06/1991", "h", 4, 25, 1], ["Sarkozy", "Nicolas", "01/07/1991", "h", 6, 32, 2], ["Mouse", "Mickey", "01/08/1991", "h", 0, 21, 3], ["Éléphant", "Babar", "01/09/1991", "h", 0, 14, 4], ["Bond", "James", "01/10/1991", "h", 0, 85, 5], ["Neige", "Anna", "01/11/1991", "f", 0, 66, 6], ["Baba", "Ali", "01/12/1991", "h", 0, 47, 7], ["Ourson", "Winnie", "01/01/1991", "h", 0, 48, 8]]
-
-for i in list:
-	a = list[z].pop(4)
-	list[z].insert(4,1 + a)
-	z +=1
-print(list)
+while list_of_players_of_this_round:
+	print("oulah")
+	list_of_players_of_this_round.pop()

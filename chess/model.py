@@ -14,8 +14,6 @@ class Tournament:
 
 class Players:
 	id = 0
-	nb_players = int()
-	list = []
 	def __init__(self):
 		self.name = str()
 		self.surname = str()
@@ -24,11 +22,9 @@ class Players:
 		self.ranking = int()
 		self.points = float()
 		self.id = Players.id
+		self.nb_players = int()
+		self.list_of_players = []
 		Players.id += 1
-
-
-class Ranking:
-	ranked_list = []
 
 class MenuEntry:
 	def __init__(self, option, handler):
@@ -64,12 +60,20 @@ class Rounds:
 	number = 1
 	def __init__(self):
 		self.nb_rounds = 4
-		self.rounds_name = f"round{Rounds.number}"
-		Rounds.number +=1
+		self.starting_round = str()
+		self.finishing_round = str()
+		self.ranked_list_of_players = []
+		self.list_of_players_1 = []
+		self.list_of_players_2 = []
+		self.list_of_played_matchs = []
+		self.list_of_displayed_matchs = []
+		self.list_of_tested_matchs = []
+		self.list_of_matchs_of_this_round = []
+		self.list_of_players_of_this_round = []
+		self.list_of_players_to_reintegrate = []
+		self.reintegrate = False
+		Rounds.number += 1
 
-class Match:
-	def __init__(self):
-		self.list = []
 
 class Color:
 	def random(self):
