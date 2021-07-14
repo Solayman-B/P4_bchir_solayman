@@ -10,6 +10,7 @@ class Tournament:
 		self.ending_date = None
 		self.time_control = str()
 		self.note = str()
+		self.rounds_list = []
 
 
 class Players:
@@ -65,7 +66,7 @@ class Rounds:
 		self.ranked_list_of_players = []
 		self.list_of_played_matchs = []
 		self.list_of_matchs_of_this_round = []
-		self.list_of_players_to_reintegrate = []
+		self.players_to_reintegrate = []
 		Rounds.number += 1
 
 

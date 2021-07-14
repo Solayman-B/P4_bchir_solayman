@@ -35,23 +35,21 @@ class HomeMenuController:
 class NewGameController:
 	"""get the tournament informations"""
 	def __init__(self):
-		self.tournament = Tournament()
 		self.view = NewGameView()
-		self.tournament.starting_date = datetime.datetime.now().strftime('%d/%m/%Y')
+		tournament.starting_date = datetime.datetime.now().strftime('%d/%m/%Y')
 
 	def __call__(self):
 		# entrer info tournoi
-
-		self.tournament.name, self.tournament.nb_days, self.tournament.location, self.tournament.time_control, self.tournament.note, = self.view.get_user_info(self.tournament)
-		if self.tournament.nb_days > 1:
-			self.tournament.ending_date = (datetime.datetime.now() + datetime.timedelta(days=self.tournament.nb_days)).strftime('%d/%m/%Y')
-			self.tournament.date = f"du {self.tournament.starting_date} au {self.tournament.ending_date}"
+		tournament.name, tournament.nb_days, tournament.location, tournament.time_control, tournament.note = self.view.get_user_info(tournament)
+		if tournament.nb_days > 1:
+			tournament.ending_date = (datetime.datetime.now() + datetime.timedelta(days=tournament.nb_days)).strftime('%d/%m/%Y')
+			tournament.date = f"du {tournament.starting_date} au {tournament.ending_date}"
 		else:
-			self.tournament.date = self.tournament.starting_date
-		print("\n", self.tournament.name, self.tournament.location, self.tournament.date, self.tournament.time_control, "\n")
+			tournament.date = tournament.starting_date
+		print("\n", tournament.name, tournament.location, tournament.date, tournament.time_control, "\n")
 		return PlayersController
 
-class PlayersController:
+class PlayersController():
 	"""enter the players informations"""
 	def __call__(self):
 		model_player = Players()
@@ -76,6 +74,10 @@ class PlayersController:
 			"""sort players in two lists"""
 			ranking_controller.rank_this_list(model_player.list_of_players, i, round)
 			round.finishing_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
+			round.list_of_matchs_of_this_round.insert(0, round.starting_round)
+			round.list_of_matchs_of_this_round.append(round.finishing_round)
+			tournament.rounds_list.append(f"Round{i+1}")
+			tournament.rounds_list.append(round.list_of_matchs_of_this_round)
 			round.list_of_matchs_of_this_round.clear()
 			print(f"le round {i+1} s'est terminé le {round.finishing_round}\n\n			**********\n")
 
@@ -85,19 +87,6 @@ class RankingController:
 
 	"""sort the players by points (4), and if they're equal by ranking (5), and split them into two separated lists"""
 
-	def other_rounds(self, list_of_players, round):
-		match_view = MatchView()
-		color = Color()
-		"""generating pairs of players in list of futures matchs and give the color wich the player will play with"""
-		for player_1, player_2 in zip(list_of_players[::2], list_of_players[1::2]):
-			#match = [player_1[6], player_1[4]], [player_2[6], player_2[4]]
-			match = player_1[6], player_2[6]
-			match_view.display_match(color.random(), player_1, player_2)
-			round.list_of_matchs_of_this_round.append(match)
-			self.enter_results(round)
-
-
-
 	def rank_this_list(self,list_of_players, i, round):
 		match_view = MatchView()
 		color = Color()
@@ -106,35 +95,34 @@ class RankingController:
 		if i == 0:
 			for player_1, player_2 in zip(round.ranked_list_of_players[:lenth_ranked_list_of_players],
 										  round.ranked_list_of_players[lenth_ranked_list_of_players:]):
-				#match = [player_1[6], player_1[4]], [player_2[6], player_2[4]]
-				match = player_1[6], player_2[6]
+				match = [player_1[6], player_1[4]], [player_2[6], player_2[4]]
 				round.list_of_matchs_of_this_round.append(match)
-				match_view.display_match(color.random(), player_1[6], player_2[6])
+				match_view.display_match(color.random(), match[0], match[1])
 			self.enter_results(round)
 
 		else:
 			def play_it(match):
-				if len(round.list_of_matchs_of_this_round) != 4:
+				if len(round.list_of_matchs_of_this_round) != lenth_ranked_list_of_players:
 					match_view.display_match(color.random(), match[0], match[1])
 					round.list_of_matchs_of_this_round.append(match)
 					self.enter_results(round)
 
 			def is_match_already_played(player_1, player_2):
 				if (player_1, player_2) in round.list_of_played_matchs or (player_2, player_1) in round.list_of_played_matchs:
-					round.list_of_players_to_reintegrate.append(player_1)
-					round.list_of_players_to_reintegrate.append(player_2)
+					round.players_to_reintegrate.append(player_1)
+					round.players_to_reintegrate.append(player_2)
 				else:
 					play_it((player_1, player_2))
 
-			while len(round.list_of_matchs_of_this_round) !=4:
+			while len(round.list_of_matchs_of_this_round) !=lenth_ranked_list_of_players:
 				for player_1, player_2 in zip(list_of_players[::2], list_of_players[1::2]):
-					if round.list_of_players_to_reintegrate:
-						p3 = round.list_of_players_to_reintegrate.pop()
-						p4 = round.list_of_players_to_reintegrate.pop()
-						is_match_already_played(player_1[6], p3)
-						is_match_already_played(player_2[6], p4)
+					if round.players_to_reintegrate:
+						p3 = round.players_to_reintegrate.pop()
+						p4 = round.players_to_reintegrate.pop()
+						is_match_already_played([player_1[6], player_1[4]],  p3)
+						is_match_already_played([player_2[6], player_2[4]], p4)
 					else:
-						is_match_already_played(player_1[6], player_2[6])
+						is_match_already_played([player_1[6], player_1[4]], [player_2[6], player_2[4]])
 
 
 	def enter_results(self,round):
