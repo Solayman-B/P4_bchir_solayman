@@ -11,10 +11,12 @@ class Tournament:
 		self.time_control = str()
 		self.note = str()
 		self.rounds_list = []
+		self.nb_rounds = 4
+		self.categories = ["nom", "nombre de jours", "lieu", "control du temps", "nombre de rounds", "note"]
 
 
 class Players:
-	id = 0
+	id = 1
 	def __init__(self):
 		self.name = str()
 		self.surname = str()
@@ -25,6 +27,7 @@ class Players:
 		self.id = Players.id
 		self.nb_players = int()
 		self.list_of_players = []
+		self.categories = ["nom", "prenom", "sexe", "date de naissance", "classement", "nombre de points", "identifiant"]
 		Players.id += 1
 
 class MenuEntry:
@@ -58,16 +61,13 @@ class Menu:
 
 
 class Rounds:
-	number = 1
 	def __init__(self):
-		self.nb_rounds = 4
 		self.starting_round = str()
 		self.finishing_round = str()
 		self.ranked_list_of_players = []
 		self.list_of_played_matchs = []
 		self.list_of_matchs_of_this_round = []
 		self.players_to_reintegrate = []
-		Rounds.number += 1
 
 
 class Color:
@@ -78,5 +78,5 @@ class Color:
 			color = "noirs"
 		return color
 
-class Results:
+class Rapports:
 	pass

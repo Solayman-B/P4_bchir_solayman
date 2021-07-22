@@ -14,20 +14,26 @@ class HomeMenuView:
 			# afficher le menu
 			self.display_menu()
 			# demander un choix à l'utilisateur
-			choice = "1" #input(">> ")
+			choice = "1" #input("\n\n>>> ")
 			# valider le choix
 			if choice in self.menu:
 				# retourner le choix
 				return self.menu[choice]
 
 class NewGameView:
-	def get_user_info(self, tournament):
-		tournament.name = "Acacias"# check_input(input("\nNom du tournoi: "),"")
-		tournament.nb_days = 2# check_input(input("\nDurée en jours du tournoi: "), int)
-		tournament.location = "Paris"# check_input(input("\nLieu du tournoi: "), "")
-		tournament.time_control = "blitz" # check_input(input("\nContrôle du temps de jeu:\n\nEntrez 'BT' pour bullet, 'BZ' pour blitz, 'CR' pour coup rapide: "), 'T')
-		tournament.note = ""# input("\nAjouter une remarque ou tapez 'Enrée' pour continuer ")
-		return tournament.name, tournament.nb_days, tournament.location, tournament.time_control, tournament.note
+	def get_user_info(self, i):
+		if i == 0:
+			return "Acacias"  # check_input(input("\nNom du tournoi:\n\n>>> "),"")
+		elif i == 1:
+			return 2  # check_input(input("\nDurée en jours du tournoi:\n\n>>> "), int)
+		elif i == 2:
+			return "Paris"  # check_input(input("\nLieu du tournoi:\n\n>>> "), "")
+		elif i == 3:
+			return "blitz"  # check_input(input("\nContrôle du temps de jeu:\n\nEntrez 'BT' pour bullet, 'BZ' pour blitz, 'CR' pour coup rapide:\n\n>>> "), 'T')
+		elif i == 4:
+			return  4  # check_input(input("Le nombre de rounds est de 4, entrez un nouveau nombre pour le modifier sinon appuyez sur 'Entrée':\n\n>>> "), "4")
+		elif i == 5:
+			return ""  # input("\nAjouter une remarque ou tapez 'Entrée' pour continuer:\n\n>>> ")
 
 
 class PlayersView:
@@ -38,12 +44,12 @@ class PlayersView:
 
 	# ajouter un nouveau joueur
 	def enter_new_player(self, player):
-		player.name = ""#check_input(input(f"\nEntrez le nom du joueur: "), "")
-		player.surname = ""#check_input(input("\nSon prénom: "),"")
-		player.date_of_birth = ""#check_input(input("\nSa date de naissance sous la forme JJ/MM/AAAA: "), "")
-		player.sex = ""#check_input(input("\nSon sexe 'H' ou 'F': "), "H")
+		player.name =""# check_input(input(f"\nEntrez le nom du joueur:\n\n>>> "), "")
+		player.surname = ""# check_input(input("\nSon prénom:\n\n>>> "),"")
+		player.date_of_birth =""# check_input(input("\nSa date de naissance sous la forme JJ/MM/AAAA:\n\n>>> "), "")
+		player.sex =""# check_input(input("\nSon sexe 'H' ou 'F':\n\n>>> "), "H")
 		player.points = 0.0
-		player.ranking = ""#check_input(input("\nSon rang: "), int)
+		player.ranking =""# check_input(input("\nSon rang:\n\n>>> "), int)
 		return player.name, player.surname, player.date_of_birth, player.sex, player.points, player.ranking, player.id
 
 class MatchView:
@@ -52,6 +58,6 @@ class MatchView:
 
 #resultats = input()
 class ResultsView:
-	def enter_results(self,player):
-		results = random.choice("VDN") #check_input(input(f"\nJoueur :{i}  \n\nEntrez 'V' pour une victoire, 'N' pour un match nul, et 'D' pour une défaite: "), "V")
+	def enter_results(self, player):
+		results = "v" #random.choice("VDN") #check_input(input(f"\nJoueur: {player[6]}  \n\nEntrez 'V' pour une victoire, 'N' pour un match nul, et 'D' pour une défaite:\n\n>>> "), "V")
 		return results

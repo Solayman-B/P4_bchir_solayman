@@ -1,5 +1,5 @@
-from model import Tournament
-
+from view import *
+from model import *
 
 def check_input(info, key):
 	"""Verify that user input is corresponding"""
@@ -23,5 +23,20 @@ def check_input(info, key):
 		while info.upper() != "V" and info.upper() != "N" and info.upper() != "D":
 			info = input("\nVeillez entrer 'V', 'N' ou 'D' svp: ")
 		return info
+	elif key == "4":
+		if info.isdigit():
+			return int(info)
+		else:
+			return 4
+	elif key == "C":
+		if info.upper() == "C":
+			return info.upper
+		else:
+			info = ""
+			return info
+
 
 tournament = Tournament()
+round = Rounds()
+
+color = Color()
