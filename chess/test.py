@@ -1,14 +1,7 @@
-from database import *
-from model import *
-from view import *
-tournament = Tournament()
-tinydb = Tinydb()
-new_game_view = NewGameView()
 
+listevide = [1, 2, 3]
 
-db.truncate()
-for key, value in zip(keys, tournament.info):
-	print(key, "key")
-	tinydb.serialize(table_tournament, key, value)
+while listevide:
+	print("vrai")
+	listevide.clear()
 
-print(db.all(), "base de données")

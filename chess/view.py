@@ -59,5 +59,5 @@ class MatchView:
 #resultats = input()
 class ResultsView:
 	def enter_results(self, player):
-		results = "v" #random.choice("VDN") #check_input(input(f"\nJoueur: {player[6]}  \n\nEntrez 'V' pour une victoire, 'N' pour un match nul, et 'D' pour une défaite:\n\n>>> "), "V")
+		results = "V" #random.choice("VDN") #check_input(input(f"\nJoueur: {player[6]}  \n\nEntrez 'V' pour une victoire, 'N' pour un match nul, et 'D' pour une défaite:\n\n>>> "), "V")
 		return results

@@ -89,6 +89,7 @@ class PlayersController():
 			"""sort players in two lists"""
 			ranking_controller.rank_this_list(model_player.list_of_players, i)
 			Tinydb.serialize(self, table_tournament, f"matchs du round {i+1}", round.list_of_matchs_of_this_round)
+			ranking_controller.enter_results()
 			round.finishing_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
 			Tinydb.serialize(self, table_tournament, f"fin du round {i+1}", round.finishing_round)
 			round.list_of_matchs_of_this_round.insert(0, round.starting_round)
@@ -109,7 +110,6 @@ class RankingController:
 		if len(round.list_of_matchs_of_this_round) != lenth_ranked_list_of_players:
 			match_view.display_match(color.random(), match[0], match[1])
 			round.list_of_matchs_of_this_round.append(match)
-			self.enter_results()
 
 	def is_match_already_played(self, player_1, player_2, lenth_ranked_list_of_players):
 		#print(player_1, "player 1", player_2, "player 2", round.list_of_played_matchs, "played matchs")
@@ -130,7 +130,6 @@ class RankingController:
 				match = [player_1[6], player_1[4]], [player_2[6], player_2[4]]
 				round.list_of_matchs_of_this_round.append(match)
 				match_view.display_match(color.random(), match[0], match[1])
-			self.enter_results()
 
 		# for the others rounds
 		else:
@@ -150,16 +149,17 @@ class RankingController:
 		results = ResultsView()
 		z = 0
 		for player in round.ranked_list_of_players:
-			results.enter_results(player)
+			result = results.enter_results(player)
 			# removed old points
 			a = round.ranked_list_of_players[z].pop(4)
+			#print(round.ranked_list_of_players[z], "round.ranked_list_of_players[z]")
 			# saving new points
-			if results == "V":
-				round.ranked_list_of_players[z].insert(4, 1.0 + a)
-			elif results == "N":
-				round.ranked_list_of_players[z].insert(4, 0.5 + a)
+			if result == "V":
+				round.ranked_list_of_players[z].insert(4, a + 1.0)
+			elif result == "N":
+				round.ranked_list_of_players[z].insert(4, a + 0.5)
 			else:
-				round.ranked_list_of_players[z].insert(4, 0.0 + a)
+				round.ranked_list_of_players[z].insert(4, a + 0.0)
 			z += 1
 		for match in round.list_of_matchs_of_this_round:
 			round.list_of_played_matchs.append(match)
