@@ -54,8 +54,9 @@ class PlayersView:
 
 
 class MatchView:
-	def display_match(self, color, player_1,player_2):
-		print(f"Le joueur {player_1} avec les {color} affrontera le joueur {player_2} \n")
+	def display_match(self, color, p1, p2):
+
+		print(f"Le joueur {p1} avec les {color} affrontera le joueur {p2}\n")
 
 #resultats = input()
 class ResultsView:

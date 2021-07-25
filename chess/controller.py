@@ -66,7 +66,6 @@ class PlayersController():
 		players = [Players() for i in range(model_player.nb_players)]
 		for player in players:
 			model_player.list_of_players.append(view_player.enter_new_player(player))
-		print(model_player.list_of_players, "model_player.list_of_players")
 
 		""" MODIFIE LA LISTE 'Players.list' POUR LES TESTS """
 		model_player.list_of_players = [{"nom": "Delafontaine", "prenom": "Jean", "date de naissance": "01/06/1991", "sexe": "h", "nombre de points": 0, "classement": 25, "id": 1}, {"nom": "Sarkozy", "prenom": "Nicolas", "date de naissance": "01/07/1991", "sexe": "h", "nombre de points": 0, "classement": 32, "id": 2}, {"nom": "Mouse", "prenom": "Mickey", "date de naissance": "01/08/1991", "sexe": "h", "nombre de points": 0, "classement": 21, "id": 3}, {"nom": "Éléphant", "prenom": "Babar", "date de naissance": "01/09/1991", "sexe": "h", "nombre de points": 0, "classement": 14, "id": 4}, {"nom": "Bond", "prenom": "James", "date de naissance": "01/10/1991", "sexe": "h", "nombre de points": 0, "classement": 85, "id": 5}, {"nom": "Neige", "prenom": "Anna", "date de naissance": "01/11/1991", "sexe": "f", "nombre de points": 0, "classement": 66, "id": 6}, {"nom": "Baba", "prenom": "Ali", "date de naissance": "01/12/1991", "sexe": "h", "nombre de points": 0, "classement": 47, "id": 7}, {"nom": "Ourson", "prenom": "Winnie", "date de naissance": "01/01/1991", "sexe": "h", "nombre de points": 0, "classement": 48, "id": 8}]
@@ -109,19 +108,20 @@ class PlayersController():
 
 class RankingController:
 	"""sort the players by points (4), and if they're equal by ranking (5), and split them into two separated lists"""
-	def play_it(self, match, lenth_ranked_list_of_players):
+	def play_it(self, p1, p2, lenth_ranked_list_of_players):
 		match_view = MatchView()
 		if len(round.list_of_matchs_of_this_round) != lenth_ranked_list_of_players:
-			match_view.display_match(color.random(), match[0], match[1])
+			match_view.display_match(color.random(), (p1["id"], p1["nom"], p1["prenom"]), (p2["id"], p2["nom"], p2["prenom"]))
+			match = p1["id"], p2["id"]
 			round.list_of_matchs_of_this_round.append(match)
 
-	def is_match_already_played(self, player_1, player_2, lenth_ranked_list_of_players):
+	def is_match_already_played(self, p1, p2, lenth_ranked_list_of_players):
 		#print(player_1, "player 1", player_2, "player 2", round.list_of_played_matchs, "played matchs")
-		if (player_1, player_2) in round.list_of_played_matchs or (player_2, player_1) in round.list_of_played_matchs:
-			round.players_to_reintegrate.append(player_1)
-			round.players_to_reintegrate.append(player_2)
+		if (p1["id"], p2["id"]) in round.list_of_played_matchs or (p2["id"], p1["id"]) in round.list_of_played_matchs:
+			round.players_to_reintegrate.append(p1)
+			round.players_to_reintegrate.append(p2)
 		else:
-			self.play_it((player_1, player_2), lenth_ranked_list_of_players)
+			self.play_it(p1, p2, lenth_ranked_list_of_players)
 
 	def rank_this_list(self, list_of_players, i):
 		match_view = MatchView()
@@ -130,23 +130,23 @@ class RankingController:
 		lenth_ranked_list_of_players = len(round.ranked_list_of_players) // 2
 		# for the 1st round
 		if i == 0:
-			for player_1, player_2 in zip(round.ranked_list_of_players[:lenth_ranked_list_of_players],
+			for p1, p2 in zip(round.ranked_list_of_players[:lenth_ranked_list_of_players],
 										  round.ranked_list_of_players[lenth_ranked_list_of_players:]):
-				match = [player_1["id"], player_1["nombre de points"]], [player_2["id"], player_2["nombre de points"]]
+				match_view.display_match(color.random(), (p1["id"], p1["nom"], p1["prenom"]), (p2["id"], p2["nom"], p2["prenom"]))
+				match = p1["id"], p2["id"]
 				round.list_of_matchs_of_this_round.append(match)
-				match_view.display_match(color.random(), match[0], match[1])
 
 		# for the others rounds
 		else:
 			while len(round.list_of_matchs_of_this_round) != lenth_ranked_list_of_players:
-				for player_1, player_2 in zip(list_of_players[::2], list_of_players[1::2]):
+				for p1, p2 in zip(list_of_players[::2], list_of_players[1::2]):
 					if round.players_to_reintegrate:
 						p3 = round.players_to_reintegrate.pop()
 						p4 = round.players_to_reintegrate.pop()
-						self.is_match_already_played([player_1["id"], player_1["nombre de points"]],  p3, lenth_ranked_list_of_players)
-						self.is_match_already_played([player_2["id"], player_2["nombre de points"]], p4, lenth_ranked_list_of_players)
+						self.is_match_already_played(p1,  p3, lenth_ranked_list_of_players)
+						self.is_match_already_played(p2, p4, lenth_ranked_list_of_players)
 					else:
-						self.is_match_already_played([player_1["id"], player_1["nombre de points"]], [player_2["id"], player_2["nombre de points"]], lenth_ranked_list_of_players)
+						self.is_match_already_played(p1, p2, lenth_ranked_list_of_players)
 
 
 	def enter_results(self):
