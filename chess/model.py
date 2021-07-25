@@ -16,7 +16,7 @@ class Tournament:
 
 
 class Players:
-	id = 1
+	id = 0
 	def __init__(self):
 		self.name = str()
 		self.surname = str()
@@ -27,7 +27,7 @@ class Players:
 		self.id = Players.id
 		self.nb_players = int()
 		self.list_of_players = []
-		self.categories = ["nom", "prenom", "sexe", "date de naissance", "classement", "nombre de points", "identifiant"]
+		self.categories = ["nom", "prenom", "date de naissance", "sexe", "nombre de points", "classement", "id"]
 		Players.id += 1
 
 class MenuEntry:

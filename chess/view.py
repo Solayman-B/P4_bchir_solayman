@@ -50,7 +50,8 @@ class PlayersView:
 		player.sex =""# check_input(input("\nSon sexe 'H' ou 'F':\n\n>>> "), "H")
 		player.points = 0.0
 		player.ranking =""# check_input(input("\nSon rang:\n\n>>> "), int)
-		return player.name, player.surname, player.date_of_birth, player.sex, player.points, player.ranking, player.id
+		return {"nom": player.name, "prenom": player.surname, "date de naissance": player.date_of_birth, "sexe": player.sex, "nombre de points": player.points, "classement": player.ranking, "id": player.id}
+
 
 class MatchView:
 	def display_match(self, color, player_1,player_2):

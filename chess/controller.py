@@ -46,7 +46,6 @@ class NewGameController:
 		new_game_view = NewGameView()
 		for key, i in zip(tournament.categories, range(10)):
 			value = new_game_view.get_user_info(i)
-
 			Tinydb.serialize(self, table_tournament, key, value)
 		if tournament.nb_days > 1:
 			tournament.ending_date = (datetime.datetime.now() + datetime.timedelta(days=tournament.nb_days)).strftime('%d/%m/%Y')
@@ -66,18 +65,20 @@ class PlayersController():
 		model_player.nb_players = view_player.nb_players(model_player.nb_players)
 		players = [Players() for i in range(model_player.nb_players)]
 		for player in players:
-			model_player.list_of_players.append(list(view_player.enter_new_player(player)))
+			model_player.list_of_players.append(view_player.enter_new_player(player))
+		print(model_player.list_of_players, "model_player.list_of_players")
+
+		""" MODIFIE LA LISTE 'Players.list' POUR LES TESTS """
+		model_player.list_of_players = [{"nom": "Delafontaine", "prenom": "Jean", "date de naissance": "01/06/1991", "sexe": "h", "nombre de points": 0, "classement": 25, "id": 1}, {"nom": "Sarkozy", "prenom": "Nicolas", "date de naissance": "01/07/1991", "sexe": "h", "nombre de points": 0, "classement": 32, "id": 2}, {"nom": "Mouse", "prenom": "Mickey", "date de naissance": "01/08/1991", "sexe": "h", "nombre de points": 0, "classement": 21, "id": 3}, {"nom": "Éléphant", "prenom": "Babar", "date de naissance": "01/09/1991", "sexe": "h", "nombre de points": 0, "classement": 14, "id": 4}, {"nom": "Bond", "prenom": "James", "date de naissance": "01/10/1991", "sexe": "h", "nombre de points": 0, "classement": 85, "id": 5}, {"nom": "Neige", "prenom": "Anna", "date de naissance": "01/11/1991", "sexe": "f", "nombre de points": 0, "classement": 66, "id": 6}, {"nom": "Baba", "prenom": "Ali", "date de naissance": "01/12/1991", "sexe": "h", "nombre de points": 0, "classement": 47, "id": 7}, {"nom": "Ourson", "prenom": "Winnie", "date de naissance": "01/01/1991", "sexe": "h", "nombre de points": 0, "classement": 48, "id": 8}]
 
 
+		"""  MODIFIE LA LISTE 'Players.list' POUR LES TESTS """
 
-		# trie par classement des joueurs
-		"""TEST SUPPRIMER LA LIGNE 65 QUI MODIFIE LA LISTE 'Players.list'"""
-		model_player.list_of_players = [["Delafontaine", "Jean", "01/06/1991", "h", 0, 25, 1], ["Sarkozy", "Nicolas", "01/07/1991", "h", 0, 32, 2], ["Mouse", "Mickey", "01/08/1991", "h", 0, 21, 3], ["Éléphant", "Babar", "01/09/1991", "h", 0, 14, 4], ["Bond", "James", "01/10/1991", "h", 0, 85, 5], ["Neige", "Anna", "01/11/1991", "f", 0, 66, 6], ["Baba", "Ali", "01/12/1991", "h", 0, 47, 7], ["Ourson", "Winnie", "01/01/1991", "h", 0, 48, 8]]
-		"""TEST SUPPRIMER LA LIGNE 65 QUI MODIFIE LA LISTE 'Players.list'"""
-		z = 1
-		for i in model_player.list_of_players:
-			Tinydb.serialize(self, table_players, z, i)
-			z +=1
+		for player in model_player.list_of_players:
+			z = 0
+			for indice in player:
+				Tinydb.serialize(self, table_players, model_player.categories[z], indice)
+				z += 1
 
 		"""starting the rounds of the tournament"""
 		ranking_update = RankingUpdateController()
@@ -89,7 +90,10 @@ class PlayersController():
 			"""sort players in two lists"""
 			ranking_controller.rank_this_list(model_player.list_of_players, i)
 			Tinydb.serialize(self, table_tournament, f"matchs du round {i+1}", round.list_of_matchs_of_this_round)
+			"""adding points to each player"""
 			ranking_controller.enter_results()
+			#mise à jour de la db avec les nouveaux points
+			Tinydb.update(self)
 			round.finishing_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
 			Tinydb.serialize(self, table_tournament, f"fin du round {i+1}", round.finishing_round)
 			round.list_of_matchs_of_this_round.insert(0, round.starting_round)
@@ -119,15 +123,16 @@ class RankingController:
 		else:
 			self.play_it((player_1, player_2), lenth_ranked_list_of_players)
 
-	def rank_this_list(self,list_of_players, i):
+	def rank_this_list(self, list_of_players, i):
 		match_view = MatchView()
-		round.ranked_list_of_players = sorted(sorted(list_of_players, key=itemgetter(5)), key=itemgetter(4), reverse= True)
+		list_of_players = sorted(list_of_players, key=lambda i: i['classement'])
+		round.ranked_list_of_players = sorted(list_of_players, key=lambda i: i['nombre de points'], reverse=True)
 		lenth_ranked_list_of_players = len(round.ranked_list_of_players) // 2
 		# for the 1st round
 		if i == 0:
 			for player_1, player_2 in zip(round.ranked_list_of_players[:lenth_ranked_list_of_players],
 										  round.ranked_list_of_players[lenth_ranked_list_of_players:]):
-				match = [player_1[6], player_1[4]], [player_2[6], player_2[4]]
+				match = [player_1["id"], player_1["nombre de points"]], [player_2["id"], player_2["nombre de points"]]
 				round.list_of_matchs_of_this_round.append(match)
 				match_view.display_match(color.random(), match[0], match[1])
 
@@ -138,29 +143,26 @@ class RankingController:
 					if round.players_to_reintegrate:
 						p3 = round.players_to_reintegrate.pop()
 						p4 = round.players_to_reintegrate.pop()
-						self.is_match_already_played([player_1[6], player_1[4]],  p3, lenth_ranked_list_of_players)
-						self.is_match_already_played([player_2[6], player_2[4]], p4, lenth_ranked_list_of_players)
+						self.is_match_already_played([player_1["id"], player_1["nombre de points"]],  p3, lenth_ranked_list_of_players)
+						self.is_match_already_played([player_2["id"], player_2["nombre de points"]], p4, lenth_ranked_list_of_players)
 					else:
-						self.is_match_already_played([player_1[6], player_1[4]], [player_2[6], player_2[4]], lenth_ranked_list_of_players)
+						self.is_match_already_played([player_1["id"], player_1["nombre de points"]], [player_2["id"], player_2["nombre de points"]], lenth_ranked_list_of_players)
 
 
 	def enter_results(self):
 		"""saving the points earned by each player during the last match"""
 		results = ResultsView()
-		z = 0
-		for player in round.ranked_list_of_players:
-			result = results.enter_results(player)
+		for id in range(len(round.ranked_list_of_players)):
+			result = results.enter_results(round.ranked_list_of_players[id])
 			# removed old points
-			a = round.ranked_list_of_players[z].pop(4)
 			#print(round.ranked_list_of_players[z], "round.ranked_list_of_players[z]")
 			# saving new points
 			if result == "V":
-				round.ranked_list_of_players[z].insert(4, a + 1.0)
+				round.ranked_list_of_players[id]["nombre de points"] += 1.0
 			elif result == "N":
-				round.ranked_list_of_players[z].insert(4, a + 0.5)
+				round.ranked_list_of_players[id]["nombre de points"] += 0.5
 			else:
-				round.ranked_list_of_players[z].insert(4, a + 0.0)
-			z += 1
+				round.ranked_list_of_players[id]["nombre de points"] += 0.0
 		for match in round.list_of_matchs_of_this_round:
 			round.list_of_played_matchs.append(match)
 

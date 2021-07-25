@@ -1,0 +1,9 @@
+model_player.list_of_players = {}
+		model_player.list_of_players["1"] = {"nom": "Delafontaine", "prenom": "Jean", "date de naissance": "01/06/1991", "sexe": "h", "nombre de points": 0, "classement": 25, "id": 1}
+		model_player.list_of_players["2"] = {"nom": "Sarkozy", "prenom": "Nicolas", "date de naissance": "01/07/1991", "sexe": "h", "nombre de points": 0, "classement": 32, "id": 2}
+		model_player.list_of_players["3"] = {"nom": "Mouse", "prenom": "Mickey", "date de naissance": "01/08/1991", "sexe": "h", "nombre de points": 0, "classement": 21, "id": 3}
+		model_player.list_of_players["4"] = {"nom": "Éléphant", "prenom": "Babar", "date de naissance": "01/09/1991", "sexe": "h", "nombre de points": 0, "classement": 14, "id": 4}
+		model_player.list_of_players["5"] = {"nom": "Bond", "prenom": "James", "date de naissance": "01/10/1991", "sexe": "h", "nombre de points": 0, "classement": 85, "id": 5}
+		model_player.list_of_players["6"] = {"nom": "Neige", "prenom": "Anna", "date de naissance": "01/11/1991", "sexe": "f", "nombre de points": 0, "classement": 66, "id": 6}
+		model_player.list_of_players["7"] = {"nom": "Baba", "prenom": "Ali", "date de naissance": "01/12/1991", "sexe": "h", "nombre de points": 0, "classement": 47, "id": 7}
+		model_player.list_of_players["8"] = {"nom": "Ourson", "prenom": "Winnie", "date de naissance": "01/01/1991", "sexe": "h", "nombre de points": 0, "classement": 48, "id": 8}
