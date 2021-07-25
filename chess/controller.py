@@ -1,4 +1,3 @@
-from operator import itemgetter
 from view import *
 from model import *
 from database import *
@@ -116,7 +115,6 @@ class RankingController:
 			round.list_of_matchs_of_this_round.append(match)
 
 	def is_match_already_played(self, p1, p2, lenth_ranked_list_of_players):
-		#print(player_1, "player 1", player_2, "player 2", round.list_of_played_matchs, "played matchs")
 		if (p1["id"], p2["id"]) in round.list_of_played_matchs or (p2["id"], p1["id"]) in round.list_of_played_matchs:
 			round.players_to_reintegrate.append(p1)
 			round.players_to_reintegrate.append(p2)
@@ -124,7 +122,6 @@ class RankingController:
 			self.play_it(p1, p2, lenth_ranked_list_of_players)
 
 	def rank_this_list(self, list_of_players, i):
-		match_view = MatchView()
 		list_of_players = sorted(list_of_players, key=lambda i: i['classement'])
 		round.ranked_list_of_players = sorted(list_of_players, key=lambda i: i['nombre de points'], reverse=True)
 		lenth_ranked_list_of_players = len(round.ranked_list_of_players) // 2
@@ -132,10 +129,7 @@ class RankingController:
 		if i == 0:
 			for p1, p2 in zip(round.ranked_list_of_players[:lenth_ranked_list_of_players],
 										  round.ranked_list_of_players[lenth_ranked_list_of_players:]):
-				match_view.display_match(color.random(), (p1["id"], p1["nom"], p1["prenom"]), (p2["id"], p2["nom"], p2["prenom"]))
-				match = p1["id"], p2["id"]
-				round.list_of_matchs_of_this_round.append(match)
-
+				self.play_it(p1, p2, lenth_ranked_list_of_players)
 		# for the others rounds
 		else:
 			while len(round.list_of_matchs_of_this_round) != lenth_ranked_list_of_players:
@@ -154,8 +148,6 @@ class RankingController:
 		results = ResultsView()
 		for id in range(len(round.ranked_list_of_players)):
 			result = results.enter_results(round.ranked_list_of_players[id])
-			# removed old points
-			#print(round.ranked_list_of_players[z], "round.ranked_list_of_players[z]")
 			# saving new points
 			if result == "V":
 				round.ranked_list_of_players[id]["nombre de points"] += 1.0
