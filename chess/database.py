@@ -6,8 +6,8 @@ table_players = db.table("Players")
 
 class Tinydb:
 
-	def serialize(self, table, key, value):
-		table.insert({key: value})
+	def serialize(self, table, entry):
+		table.insert(entry)
 
 	def update(self):
 		table_players.update({"nombre de points": 10}, where ("identifiant") == 1)

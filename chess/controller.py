@@ -38,21 +38,21 @@ class NewGameController:
 	def __init__(self):
 
 		tournament.starting_date = datetime.datetime.now().strftime('%d/%m/%Y')
-		Tinydb.serialize(self, table_tournament, "date du debut", tournament.starting_date)
+		Tinydb.serialize(self, table_tournament, {"date du debut": tournament.starting_date})
 
 	def __call__(self):
 		# enter the tournament informations
 		new_game_view = NewGameView()
 		for key, i in zip(tournament.categories, range(10)):
 			value = new_game_view.get_user_info(i)
-			Tinydb.serialize(self, table_tournament, key, value)
+			Tinydb.serialize(self, table_tournament, {key: value})
 		if tournament.nb_days > 1:
 			tournament.ending_date = (datetime.datetime.now() + datetime.timedelta(days=tournament.nb_days)).strftime('%d/%m/%Y')
-			Tinydb.serialize(self, table_tournament, "date de fin du tournoi", tournament.ending_date)
+			Tinydb.serialize(self, table_tournament, {"date de fin du tournoi": tournament.ending_date})
 			tournament.date = f"du {tournament.starting_date} au {tournament.ending_date}"
 		else:
 			tournament.date = tournament.starting_date
-			Tinydb.serialize(self, table_tournament, "date de fin du tournoi", tournament.starting_date)
+			Tinydb.serialize(self, table_tournament, {"date de fin du tournoi": tournament.starting_date})
 		print("\n", tournament.name, tournament.location, tournament.date, tournament.time_control, "\n")
 		return PlayersController
 
@@ -71,29 +71,27 @@ class PlayersController():
 
 
 		"""  MODIFIE LA LISTE 'Players.list' POUR LES TESTS """
-
+		z = 0
 		for player in model_player.list_of_players:
-			z = 0
-			for indice in player:
-				Tinydb.serialize(self, table_players, model_player.categories[z], indice)
-				z += 1
+			Tinydb.serialize(self, table_players, player)
+			z += 1
 
 		"""starting the rounds of the tournament"""
 		ranking_update = RankingUpdateController()
 		ranking_controller = RankingController()
 		for i in range(tournament.nb_rounds):
 			round.starting_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
-			Tinydb.serialize(self, table_tournament, f"debut du round {i+1}", round.starting_round)
+			Tinydb.serialize(self, table_tournament, {f"debut du round {i+1}": round.starting_round})
 			print(f"le round {i+1} à débuté le {round.starting_round} \n")
 			"""sort players in two lists"""
 			ranking_controller.rank_this_list(model_player.list_of_players, i)
-			Tinydb.serialize(self, table_tournament, f"matchs du round {i+1}", round.list_of_matchs_of_this_round)
+			Tinydb.serialize(self, table_tournament, {f"matchs du round {i+1}": round.list_of_matchs_of_this_round})
 			"""adding points to each player"""
 			ranking_controller.enter_results()
 			#mise à jour de la db avec les nouveaux points
 			Tinydb.update(self)
 			round.finishing_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
-			Tinydb.serialize(self, table_tournament, f"fin du round {i+1}", round.finishing_round)
+			Tinydb.serialize(self, table_tournament, {f"fin du round {i+1}": round.finishing_round})
 			round.list_of_matchs_of_this_round.insert(0, round.starting_round)
 			round.list_of_matchs_of_this_round.append(round.finishing_round)
 			tournament.rounds_list.append((f"Round{i+1}", round.list_of_matchs_of_this_round))
