@@ -67,7 +67,7 @@ class PlayersController():
 			model_player.list_of_players.append(view_player.enter_new_player(player))
 
 		""" MODIFIE LA LISTE 'Players.list' POUR LES TESTS """
-		model_player.list_of_players = [{"nom": "Delafontaine", "prenom": "Jean", "date de naissance": "01/06/1991", "sexe": "h", "nombre de points": 0, "classement": 25, "id": 1}, {"nom": "Sarkozy", "prenom": "Nicolas", "date de naissance": "01/07/1991", "sexe": "h", "nombre de points": 0, "classement": 32, "id": 2}, {"nom": "Mouse", "prenom": "Mickey", "date de naissance": "01/08/1991", "sexe": "h", "nombre de points": 0, "classement": 21, "id": 3}, {"nom": "Éléphant", "prenom": "Babar", "date de naissance": "01/09/1991", "sexe": "h", "nombre de points": 0, "classement": 14, "id": 4}, {"nom": "Bond", "prenom": "James", "date de naissance": "01/10/1991", "sexe": "h", "nombre de points": 0, "classement": 85, "id": 5}, {"nom": "Neige", "prenom": "Anna", "date de naissance": "01/11/1991", "sexe": "f", "nombre de points": 0, "classement": 66, "id": 6}, {"nom": "Baba", "prenom": "Ali", "date de naissance": "01/12/1991", "sexe": "h", "nombre de points": 0, "classement": 47, "id": 7}, {"nom": "Ourson", "prenom": "Winnie", "date de naissance": "01/01/1991", "sexe": "h", "nombre de points": 0, "classement": 48, "id": 8}]
+		model_player.list_of_players = [{"nom": "Delafontaine", "prenom": "Jean", "date de naissance": "01/06/1991", "sexe": "h", "nombre de points": 0.0, "classement": 25, "id": 1}, {"nom": "Sarkozy", "prenom": "Nicolas", "date de naissance": "01/07/1991", "sexe": "h", "nombre de points": 0.0, "classement": 32, "id": 2}, {"nom": "Mouse", "prenom": "Mickey", "date de naissance": "01/08/1991", "sexe": "h", "nombre de points": 0.0, "classement": 21, "id": 3}, {"nom": "Éléphant", "prenom": "Babar", "date de naissance": "01/09/1991", "sexe": "h", "nombre de points": 0.0, "classement": 14, "id": 4}, {"nom": "Bond", "prenom": "James", "date de naissance": "01/10/1991", "sexe": "h", "nombre de points": 0.0, "classement": 85, "id": 5}, {"nom": "Neige", "prenom": "Anna", "date de naissance": "01/11/1991", "sexe": "f", "nombre de points": 0.0, "classement": 66, "id": 6}, {"nom": "Baba", "prenom": "Ali", "date de naissance": "01/12/1991", "sexe": "h", "nombre de points": 0.0, "classement": 47, "id": 7}, {"nom": "Ourson", "prenom": "Winnie", "date de naissance": "01/01/1991", "sexe": "h", "nombre de points": 0.0, "classement": 48, "id": 8}]
 
 
 		"""  MODIFIE LA LISTE 'Players.list' POUR LES TESTS """
@@ -88,8 +88,6 @@ class PlayersController():
 			Tinydb.serialize(self, table_tournament, {f"matchs du round {i+1}": round.list_of_matchs_of_this_round})
 			"""adding points to each player"""
 			ranking_controller.enter_results()
-			#mise à jour de la db avec les nouveaux points
-			Tinydb.update(self)
 			round.finishing_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
 			Tinydb.serialize(self, table_tournament, {f"fin du round {i+1}": round.finishing_round})
 			round.list_of_matchs_of_this_round.insert(0, round.starting_round)
@@ -144,15 +142,19 @@ class RankingController:
 	def enter_results(self):
 		"""saving the points earned by each player during the last match"""
 		results = ResultsView()
-		for id in range(len(round.ranked_list_of_players)):
-			result = results.enter_results(round.ranked_list_of_players[id])
+		for i, new in zip(range(len(round.ranked_list_of_players)), table_players):
+			result = results.enter_results(round.ranked_list_of_players[i])
 			# saving new points
 			if result == "V":
-				round.ranked_list_of_players[id]["nombre de points"] += 1.0
+				round.ranked_list_of_players[i]["nombre de points"] += 1.0
 			elif result == "N":
-				round.ranked_list_of_players[id]["nombre de points"] += 0.5
+				round.ranked_list_of_players[i]["nombre de points"] += 0.5
 			else:
-				round.ranked_list_of_players[id]["nombre de points"] += 0.0
+				round.ranked_list_of_players[i]["nombre de points"] += 0.0
+			print(round.ranked_list_of_players[i])
+			#mise à jour de la db avec les nouveaux points
+			nb_points = round.ranked_list_of_players[i]["nombre de points"]
+			Tinydb.update(self, {"nombre de points": nb_points}, query.id == i)
 		for match in round.list_of_matchs_of_this_round:
 			round.list_of_played_matchs.append(match)
 

@@ -2,6 +2,7 @@ from tinydb import TinyDB, Query, where
 db = TinyDB('db.json')
 table_tournament = db.table("Tournaments")
 table_players = db.table("Players")
+query = Query()
 
 
 class Tinydb:
@@ -9,9 +10,8 @@ class Tinydb:
 	def serialize(self, table, entry):
 		table.insert(entry)
 
-	def update(self):
-		table_players.update({"nombre de points": 10}, where ("identifiant") == 1)
-		table_players.search(where("identifiant") == 1)
+	def update(self, value, key):
+		table_players.update(value, key)
 
 	def deserealize(key,table, value):
 		for item in db:
