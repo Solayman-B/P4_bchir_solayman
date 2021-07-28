@@ -23,9 +23,9 @@ class HomeMenuController:
 
 	def __call__(self):
 		# build the menu
-		self.menu.add("auto", "créer un nouveau tournoi", NewGameController())
-		self.menu.add("auto", "continuer le dernier tournoi", ResumeGameController())
-		self.menu.add("auto", "mise à jour des classements", RankingUpdateController())
+		self.menu.add("auto", "nouveau tournoi", NewGameController())
+		self.menu.add("auto", "charger un tournoi", ResumeGameController())
+		self.menu.add("auto", "afficher les rapports", RapportsController())
 
 		# the view display the menu and get the response
 		user_choice = self.view.get_user_choice()
@@ -36,7 +36,6 @@ class HomeMenuController:
 class NewGameController:
 	"""get the tournament informations"""
 	def __init__(self):
-
 		tournament.starting_date = datetime.datetime.now().strftime('%d/%m/%Y')
 		Tinydb.serialize(self, table_tournament, {"date du debut": tournament.starting_date})
 
@@ -80,6 +79,8 @@ class PlayersController():
 		ranking_update = RankingUpdateController()
 		ranking_controller = RankingController()
 		for i in range(tournament.nb_rounds):
+			# if check_input(input("Si vous souhaitez modifier le classement tapez 'C' sinon appuyez sur la touche 'Entrée':\n\n>>> "), "C"):
+			#	ranking_update.rank_players(round.ranked_list_of_players)
 			round.starting_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
 			Tinydb.serialize(self, table_tournament, {f"debut du round {i+1}": round.starting_round})
 			print(f"le round {i+1} à débuté le {round.starting_round} \n")
@@ -95,8 +96,8 @@ class PlayersController():
 			tournament.rounds_list.append((f"Round{i+1}", round.list_of_matchs_of_this_round))
 			round.list_of_matchs_of_this_round.clear()
 			print(f"le round {i+1} s'est terminé le {round.finishing_round}\n\n			**********\n")
-			# if check_input(input("Si vous souhaitez modifier les classements tapez 'C' sinon appuyez sur la touche 'Entrée':\n\n>>> "), "C"):
-			#	ranking_update.rank_players(round.ranked_list_of_players)
+		# if check_input(input("Si vous souhaitez modifier le classement tapez 'C' sinon appuyez sur la touche 'Entrée':\n\n>>> "), "C"):
+		#	ranking_update.rank_players(round.ranked_list_of_players)
 
 
 		print("Fin du tournoi.")
@@ -151,7 +152,6 @@ class RankingController:
 				round.ranked_list_of_players[i]["nombre de points"] += 0.5
 			else:
 				round.ranked_list_of_players[i]["nombre de points"] += 0.0
-			print(round.ranked_list_of_players[i])
 			#mise à jour de la db avec les nouveaux points
 			nb_points = round.ranked_list_of_players[i]["nombre de points"]
 			Tinydb.update(self, {"nombre de points": nb_points}, query.id == i)
@@ -163,12 +163,40 @@ class ResumeGameController:
 	def __call__(self):
 		print("resumegame controller")
 
+class RapportsController:
+	def __call__(self):
+		rapport = RapportsView()
+		choice = rapport.choice()
+		app = ApplicationController()
+
+		if choice == 1:
+			pass
+		elif choice == 2:
+			pass
+		elif choice == 3:
+			pass
+		elif choice == 4:
+			pass
+		elif choice == 5:
+			pass
+		elif choice == 6:
+			for i in range(9, 21):
+				print(table_tournament.get(doc_id=i))
+		elif choice == 7:
+			pass
+		else:
+			app.start()
+
+
+
 
 class RankingUpdateController:
 	def rank_players(self, list):
 		i = 0
 		for player in list:
 			ranking = check_input(input(f"Entrez le nouveau rang du joueur : {player}:\n\n>>> "), int)
-			list.pop(i)
+			list.pop(0)
 			player[5] = ranking
-			list.insert(i,player)
+			list.insert(0,player)
+			Tinydb.update(self, {"classement": ranking}, query.id == i)
+			i +=1

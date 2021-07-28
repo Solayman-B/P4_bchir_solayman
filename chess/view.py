@@ -14,7 +14,7 @@ class HomeMenuView:
 			# afficher le menu
 			self.display_menu()
 			# demander un choix à l'utilisateur
-			choice = "1" #input("\n\n>>> ")
+			choice = input("\n\n>>> ")
 			# valider le choix
 			if choice in self.menu:
 				# retourner le choix
@@ -63,3 +63,19 @@ class ResultsView:
 	def enter_results(self, player):
 		results = "V" #random.choice("VDN") #check_input(input(f"\nJoueur: {player[6]}  \n\nEntrez 'V' pour une victoire, 'N' pour un match nul, et 'D' pour une défaite:\n\n>>> "), "V")
 		return results
+
+class RapportsView:
+
+
+	def choice(self):
+		choice = check_input(input("Vous souhaitez affichez un rapport contenant:"
+								   "\n\n1/ Les acteurs par ordre alphabétique"
+								   "\n\n2/ Les acteurs par classement"
+								   "\n\n3/ Les joueurs d'un tournoi par ordre alphabétique"
+								   "\n\n4/ Les joueurs d'un tournoi par classement"
+								   "\n\n5/ Tous les tournois"
+								   "\n\n6/ Les tours d'un tournois"
+								   "\n\n7/ les matchs d'un tournoi"
+								   "\n\n8/ Retour au menu principal"
+								   "\n\n>>>   "), int)
+		return choice
