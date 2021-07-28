@@ -69,6 +69,7 @@ class Rounds:
 		self.list_of_matchs_of_this_round = []
 		self.players_to_reintegrate = []
 		self.players_to_match = []
+		self.matchs_of_this_round_db = []
 
 
 class Color:

@@ -86,9 +86,9 @@ class PlayersController():
 			print(f"le round {i+1} à débuté le {round.starting_round} \n")
 			"""sort players in two lists"""
 			ranking_controller.rank_this_list(model_player.list_of_players, i)
-			Tinydb.serialize(self, table_tournament, {f"matchs du round {i+1}": round.list_of_matchs_of_this_round})
 			"""adding points to each player"""
 			ranking_controller.enter_results()
+			Tinydb.serialize(self, table_tournament, {f"matchs du round {i + 1}": round.matchs_of_this_round_db})
 			round.finishing_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
 			Tinydb.serialize(self, table_tournament, {f"fin du round {i+1}": round.finishing_round})
 			round.list_of_matchs_of_this_round.insert(0, round.starting_round)
@@ -157,7 +157,7 @@ class RankingController:
 			Tinydb.update(self, {"nombre de points": nb_points}, query.id == i)
 		for match in round.list_of_matchs_of_this_round:
 			round.list_of_played_matchs.append(match)
-
+			round.matchs_of_this_round_db.append([(match[0], round.ranked_list_of_players[i]["nombre de points"]), (match[1], round.ranked_list_of_players[i]["nombre de points"])])
 
 class ResumeGameController:
 	def __call__(self):
@@ -169,23 +169,29 @@ class RapportsController:
 		choice = rapport.choice()
 		app = ApplicationController()
 
-		if choice == 1:
-			pass
-		elif choice == 2:
-			pass
-		elif choice == 3:
-			pass
-		elif choice == 4:
-			pass
-		elif choice == 5:
-			pass
-		elif choice == 6:
-			for i in range(9, 21):
-				print(table_tournament.get(doc_id=i))
-		elif choice == 7:
-			pass
-		else:
-			app.start()
+		while rapport:
+			if choice == 1:
+				pass
+			elif choice == 2:
+				pass
+			elif choice == 3:
+				pass
+			elif choice == 4:
+				pass
+			elif choice == 5:
+				pass
+			elif choice == 6:
+				# rounds of the tournament
+				for i in range(9, 21):
+					print(table_tournament.get(doc_id=i))
+			elif choice == 7:
+				# matchs of the tournament
+				for i in (10, 13, 16, 19):
+					print(*table_tournament.get(doc_id=i).values())
+			else:
+				# return to the home menu
+				app.start()
+			choice = rapport.choice()
 
 
 
