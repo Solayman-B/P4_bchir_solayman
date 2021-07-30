@@ -37,22 +37,25 @@ class NewGameController:
 	"""get the tournament informations"""
 	def __init__(self):
 		tournament.starting_date = datetime.datetime.now().strftime('%d/%m/%Y')
-		Tinydb.serialize(self, table_tournament, {"date du debut": tournament.starting_date})
 
 	def __call__(self):
 		# enter the tournament informations
 		new_game_view = NewGameView()
+
 		for key, i in zip(tournament.categories, range(10)):
-			value = new_game_view.get_user_info(i)
-			Tinydb.serialize(self, table_tournament, {key: value})
+			value = new_game_view.get_user_info(tournament)
+		tiny.serialize(table_tournament, value)
 		if tournament.nb_days > 1:
 			tournament.ending_date = (datetime.datetime.now() + datetime.timedelta(days=tournament.nb_days)).strftime('%d/%m/%Y')
-			Tinydb.serialize(self, table_tournament, {"date de fin du tournoi": tournament.ending_date})
 			tournament.date = f"du {tournament.starting_date} au {tournament.ending_date}"
 		else:
 			tournament.date = tournament.starting_date
-			Tinydb.serialize(self, table_tournament, {"date de fin du tournoi": tournament.starting_date})
+			tournament.ending_date = tournament.starting_date
+		tiny.update(table_tournament, {"date_de_fin": tournament.ending_date}, query.date_du_debut == tournament.starting_date)
+
+
 		print("\n", tournament.name, tournament.location, tournament.date, tournament.time_control, "\n")
+
 		return PlayersController
 
 class PlayersController():
@@ -60,19 +63,20 @@ class PlayersController():
 	def __call__(self):
 		model_player = Players()
 		view_player = PlayersView()
+		# récupérer joueurs déjà présents dans la DB
 		model_player.nb_players = view_player.nb_players(model_player.nb_players)
 		players = [Players() for i in range(model_player.nb_players)]
 		for player in players:
 			model_player.list_of_players.append(view_player.enter_new_player(player))
 
 		""" MODIFIE LA LISTE 'Players.list' POUR LES TESTS """
-		model_player.list_of_players = [{"nom": "Delafontaine", "prenom": "Jean", "date de naissance": "01/06/1991", "sexe": "h", "nombre de points": 0.0, "classement": 25, "id": 1}, {"nom": "Sarkozy", "prenom": "Nicolas", "date de naissance": "01/07/1991", "sexe": "h", "nombre de points": 0.0, "classement": 32, "id": 2}, {"nom": "Mouse", "prenom": "Mickey", "date de naissance": "01/08/1991", "sexe": "h", "nombre de points": 0.0, "classement": 21, "id": 3}, {"nom": "Éléphant", "prenom": "Babar", "date de naissance": "01/09/1991", "sexe": "h", "nombre de points": 0.0, "classement": 14, "id": 4}, {"nom": "Bond", "prenom": "James", "date de naissance": "01/10/1991", "sexe": "h", "nombre de points": 0.0, "classement": 85, "id": 5}, {"nom": "Neige", "prenom": "Anna", "date de naissance": "01/11/1991", "sexe": "f", "nombre de points": 0.0, "classement": 66, "id": 6}, {"nom": "Baba", "prenom": "Ali", "date de naissance": "01/12/1991", "sexe": "h", "nombre de points": 0.0, "classement": 47, "id": 7}, {"nom": "Ourson", "prenom": "Winnie", "date de naissance": "01/01/1991", "sexe": "h", "nombre de points": 0.0, "classement": 48, "id": 8}]
+		model_player.list_of_players = [{"nom": "Delafontaine", "prenom": "Jean", "date_de_naissance": "01/06/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 25, "id": 1}, {"nom": "Sarkozy", "prenom": "Nicolas", "date_de_naissance": "01/07/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 32, "id": 2}, {"nom": "Mouse", "prenom": "Mickey", "date_de_naissance": "01/08/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 21, "id": 3}, {"nom": "Éléphant", "prenom": "Babar", "date_de_naissance": "01/09/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 14, "id": 4}, {"nom": "Bond", "prenom": "James", "date_de_naissance": "01/10/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 85, "id": 5}, {"nom": "Neige", "prenom": "Anna", "date_de_naissance": "01/11/1991", "sexe": "f", "nombre_de_points": 0.0, "classement": 66, "id": 6}, {"nom": "Baba", "prenom": "Ali", "date_de_naissance": "01/12/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 47, "id": 7}, {"nom": "Ourson", "prenom": "Winnie", "date_de_naissance": "01/01/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 48, "id": 8}]
 
 
 		"""  MODIFIE LA LISTE 'Players.list' POUR LES TESTS """
 		z = 0
 		for player in model_player.list_of_players:
-			Tinydb.serialize(self, table_players, player)
+			tiny.serialize(table_players, player)
 			z += 1
 
 		"""starting the rounds of the tournament"""
@@ -82,15 +86,16 @@ class PlayersController():
 			# if check_input(input("Si vous souhaitez modifier le classement tapez 'C' sinon appuyez sur la touche 'Entrée':\n\n>>> "), "C"):
 			#	ranking_update.rank_players(round.ranked_list_of_players)
 			round.starting_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
-			Tinydb.serialize(self, table_tournament, {f"debut du round {i+1}": round.starting_round})
+			tiny.update(table_tournament, {f"debut_du_round {i+1}": round.starting_round}, query.date_du_debut == tournament.starting_date)
 			print(f"le round {i+1} à débuté le {round.starting_round} \n")
 			"""sort players in two lists"""
 			ranking_controller.rank_this_list(model_player.list_of_players, i)
 			"""adding points to each player"""
 			ranking_controller.enter_results()
-			Tinydb.serialize(self, table_tournament, {f"matchs du round {i + 1}": round.matchs_of_this_round_db})
+			tiny.update(table_tournament, {f"matchs du round {i + 1}": round.matchs_of_this_round_db}, query.date_du_debut == tournament.starting_date)
+			round.matchs_of_this_round_db.clear()
 			round.finishing_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
-			Tinydb.serialize(self, table_tournament, {f"fin du round {i+1}": round.finishing_round})
+			tiny.update(table_tournament, {f"fin du round {i+1}": round.finishing_round}, query.date_du_debut == tournament.starting_date)
 			round.list_of_matchs_of_this_round.insert(0, round.starting_round)
 			round.list_of_matchs_of_this_round.append(round.finishing_round)
 			tournament.rounds_list.append((f"Round{i+1}", round.list_of_matchs_of_this_round))
@@ -120,7 +125,7 @@ class RankingController:
 
 	def rank_this_list(self, list_of_players, i):
 		list_of_players = sorted(list_of_players, key=lambda i: i['classement'])
-		round.ranked_list_of_players = sorted(list_of_players, key=lambda i: i['nombre de points'], reverse=True)
+		round.ranked_list_of_players = sorted(list_of_players, key=lambda i: i['nombre_de_points'], reverse=True)
 		lenth_ranked_list_of_players = len(round.ranked_list_of_players) // 2
 		# for the 1st round
 		if i == 0:
@@ -143,21 +148,21 @@ class RankingController:
 	def enter_results(self):
 		"""saving the points earned by each player during the last match"""
 		results = ResultsView()
-		for i, new in zip(range(len(round.ranked_list_of_players)), table_players):
-			result = results.enter_results(round.ranked_list_of_players[i])
+		for player in round.ranked_list_of_players:
+			result = results.enter_results(player)
 			# saving new points
 			if result == "V":
-				round.ranked_list_of_players[i]["nombre de points"] += 1.0
+				player["nombre_de_points"] += 1.0
 			elif result == "N":
-				round.ranked_list_of_players[i]["nombre de points"] += 0.5
+				player["nombre_de_points"] += 0.5
 			else:
-				round.ranked_list_of_players[i]["nombre de points"] += 0.0
+				player["nombre_de_points"] += 0.0
 			#mise à jour de la db avec les nouveaux points
-			nb_points = round.ranked_list_of_players[i]["nombre de points"]
-			Tinydb.update(self, {"nombre de points": nb_points}, query.id == i)
+			nb_points = player["nombre_de_points"]
+			tiny.update(table_players, {"nombre_de_points": nb_points}, query.id == player["id"])
 		for match in round.list_of_matchs_of_this_round:
 			round.list_of_played_matchs.append(match)
-			round.matchs_of_this_round_db.append([(match[0], round.ranked_list_of_players[i]["nombre de points"]), (match[1], round.ranked_list_of_players[i]["nombre de points"])])
+			round.matchs_of_this_round_db.append([(match[0], player["nombre_de_points"]), (match[1], player["nombre_de_points"])])
 
 class ResumeGameController:
 	def __call__(self):
@@ -182,15 +187,18 @@ class RapportsController:
 				pass
 			elif choice == 6:
 				# rounds of the tournament
+				print("Liste des tours d'un tournois\n\n")
 				for i in range(9, 21):
-					print(table_tournament.get(doc_id=i))
+					print(table_tournament.get(doc_id=i), "\n\n")
 			elif choice == 7:
 				# matchs of the tournament
+				print("Liste des matchs d'un tournoi\n\n")
 				for i in (10, 13, 16, 19):
-					print(*table_tournament.get(doc_id=i).values())
+					print(*table_tournament.get(doc_id=i).values(), "\n\n")
 			else:
 				# return to the home menu
 				app.start()
+				break
 			choice = rapport.choice()
 
 
@@ -204,5 +212,5 @@ class RankingUpdateController:
 			list.pop(0)
 			player[5] = ranking
 			list.insert(0,player)
-			Tinydb.update(self, {"classement": ranking}, query.id == i)
+			tiny.update(table_players, {"classement": ranking}, query.id == player["id"])
 			i +=1

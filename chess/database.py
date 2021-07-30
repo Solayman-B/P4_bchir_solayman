@@ -10,8 +10,8 @@ class Tinydb:
 	def serialize(self, table, entry):
 		table.insert(entry)
 
-	def update(self, value, key):
-		table_players.update(value, key)
+	def update(self, table, value, key):
+		table.update(value, key)
 
 	def deserealize(key,table, value):
 		for item in db:
@@ -20,3 +20,4 @@ class Tinydb:
 	#db.truncate()
 
 	#print(db.all())
+

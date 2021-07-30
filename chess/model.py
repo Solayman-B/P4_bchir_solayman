@@ -12,7 +12,7 @@ class Tournament:
 		self.note = str()
 		self.rounds_list = []
 		self.nb_rounds = 4
-		self.categories = ["nom", "nombre de jours", "lieu", "control du temps", "nombre de rounds", "note"]
+		self.categories = ["nom", "nombre_de_jours", "lieu", "control_du_temps", "nombre_de_rounds", "note"]
 
 
 class Players:
@@ -27,7 +27,7 @@ class Players:
 		self.id = Players.id
 		self.nb_players = int()
 		self.list_of_players = []
-		self.categories = ["nom", "prenom", "date de naissance", "sexe", "nombre de points", "classement", "id"]
+		self.categories = ["nom", "prenom", "date_de_naissance", "sexe", "nombre_de_points", "classement", "id"]
 		Players.id += 1
 
 class MenuEntry:

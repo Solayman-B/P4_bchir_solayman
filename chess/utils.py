@@ -1,5 +1,6 @@
 from view import *
 from model import *
+from database import *
 
 def check_input(info, key):
 	"""Verify that user input is corresponding"""
@@ -40,3 +41,4 @@ tournament = Tournament()
 round = Rounds()
 
 color = Color()
+tiny = Tinydb()
