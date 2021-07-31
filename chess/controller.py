@@ -3,6 +3,7 @@ from model import *
 from database import *
 import datetime
 from utils import *
+from operator import itemgetter
 
 
 class ApplicationController:
@@ -42,7 +43,7 @@ class NewGameController:
 		# enter the tournament informations
 		new_game_view = NewGameView()
 
-		for key, i in zip(tournament.categories, range(10)):
+		for i in range(10):
 			value = new_game_view.get_user_info(tournament)
 		tiny.serialize(table_tournament, value)
 		if tournament.nb_days > 1:
@@ -51,7 +52,7 @@ class NewGameController:
 		else:
 			tournament.date = tournament.starting_date
 			tournament.ending_date = tournament.starting_date
-		tiny.update(table_tournament, {"date_de_fin": tournament.ending_date}, query.date_du_debut == tournament.starting_date)
+		tiny.update(table_tournament, {"date_de_fin": tournament.ending_date}, query.date_de_debut == tournament.starting_date)
 
 
 		print("\n", tournament.name, tournament.location, tournament.date, tournament.time_control, "\n")
@@ -68,13 +69,13 @@ class PlayersController():
 		players = [Players() for i in range(model_player.nb_players)]
 		for player in players:
 			model_player.list_of_players.append(view_player.enter_new_player(player))
-
 		""" MODIFIE LA LISTE 'Players.list' POUR LES TESTS """
-		model_player.list_of_players = [{"nom": "Delafontaine", "prenom": "Jean", "date_de_naissance": "01/06/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 25, "id": 1}, {"nom": "Sarkozy", "prenom": "Nicolas", "date_de_naissance": "01/07/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 32, "id": 2}, {"nom": "Mouse", "prenom": "Mickey", "date_de_naissance": "01/08/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 21, "id": 3}, {"nom": "Éléphant", "prenom": "Babar", "date_de_naissance": "01/09/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 14, "id": 4}, {"nom": "Bond", "prenom": "James", "date_de_naissance": "01/10/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 85, "id": 5}, {"nom": "Neige", "prenom": "Anna", "date_de_naissance": "01/11/1991", "sexe": "f", "nombre_de_points": 0.0, "classement": 66, "id": 6}, {"nom": "Baba", "prenom": "Ali", "date_de_naissance": "01/12/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 47, "id": 7}, {"nom": "Ourson", "prenom": "Winnie", "date_de_naissance": "01/01/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 48, "id": 8}]
-
-
+		model_player.list_of_players = [{"nom": "Delafontaine", "prenom": "Jean", "date_de_naissance": "01/06/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 25, "id": 1}, {"nom": "Sarkozy", "prenom": "Nicolas", "date_de_naissance": "01/07/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 32, "id": 2}, {"nom": "Mouse", "prenom": "Mickey", "date_de_naissance": "01/08/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 21, "id": 3}, {"nom": "Elephant", "prenom": "Babar", "date_de_naissance": "01/09/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 14, "id": 4}, {"nom": "Bond", "prenom": "James", "date_de_naissance": "01/10/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 85, "id": 5}, {"nom": "Neige", "prenom": "Anna", "date_de_naissance": "01/11/1991", "sexe": "f", "nombre_de_points": 0.0, "classement": 66, "id": 6}, {"nom": "Baba", "prenom": "Ali", "date_de_naissance": "01/12/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 47, "id": 7}, {"nom": "Ourson", "prenom": "Winnie", "date_de_naissance": "01/01/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 48, "id": 8}]
 		"""  MODIFIE LA LISTE 'Players.list' POUR LES TESTS """
+		#print(table_tournament.get(doc_id=1)["joueurs"])
 		z = 0
+		tiny.update(table_tournament, {"joueurs": tuple(model_player.list_of_players)},
+					query.date_de_debut == tournament.starting_date)
 		for player in model_player.list_of_players:
 			tiny.serialize(table_players, player)
 			z += 1
@@ -83,25 +84,25 @@ class PlayersController():
 		ranking_update = RankingUpdateController()
 		ranking_controller = RankingController()
 		for i in range(tournament.nb_rounds):
-			# if check_input(input("Si vous souhaitez modifier le classement tapez 'C' sinon appuyez sur la touche 'Entrée':\n\n>>> "), "C"):
+			# if check_input(input("Si vous souhaitez modifier le classement tapez 'C' sinon appuyez sur la touche 'Entrée':\n\n>>> "), "ranking"):
 			#	ranking_update.rank_players(round.ranked_list_of_players)
 			round.starting_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
-			tiny.update(table_tournament, {f"debut_du_round {i+1}": round.starting_round}, query.date_du_debut == tournament.starting_date)
+			tiny.update(table_tournament, {f"debut_du_round {i+1}": round.starting_round}, query.date_de_debut == tournament.starting_date)
 			print(f"le round {i+1} à débuté le {round.starting_round} \n")
 			"""sort players in two lists"""
 			ranking_controller.rank_this_list(model_player.list_of_players, i)
 			"""adding points to each player"""
 			ranking_controller.enter_results()
-			tiny.update(table_tournament, {f"matchs du round {i + 1}": round.matchs_of_this_round_db}, query.date_du_debut == tournament.starting_date)
+			tiny.update(table_tournament, {f"matchs du round {i + 1}": round.matchs_of_this_round_db}, query.date_de_debut == tournament.starting_date)
 			round.matchs_of_this_round_db.clear()
 			round.finishing_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
-			tiny.update(table_tournament, {f"fin du round {i+1}": round.finishing_round}, query.date_du_debut == tournament.starting_date)
+			tiny.update(table_tournament, {f"fin du round {i+1}": round.finishing_round}, query.date_de_debut == tournament.starting_date)
 			round.list_of_matchs_of_this_round.insert(0, round.starting_round)
 			round.list_of_matchs_of_this_round.append(round.finishing_round)
 			tournament.rounds_list.append((f"Round{i+1}", round.list_of_matchs_of_this_round))
 			round.list_of_matchs_of_this_round.clear()
 			print(f"le round {i+1} s'est terminé le {round.finishing_round}\n\n			**********\n")
-		# if check_input(input("Si vous souhaitez modifier le classement tapez 'C' sinon appuyez sur la touche 'Entrée':\n\n>>> "), "C"):
+		# if check_input(input("Si vous souhaitez modifier le classement tapez 'C' sinon appuyez sur la touche 'Entrée':\n\n>>> "), "ranking"):
 		#	ranking_update.rank_players(round.ranked_list_of_players)
 
 
@@ -175,19 +176,39 @@ class RapportsController:
 		app = ApplicationController()
 
 		while rapport:
+			"""\n\n1/ Les acteurs par ordre alphabétique"
+			
+			   "\n\n2/ Les acteurs par classement"
+			   """
+
 			if choice == 1:
 				pass
 			elif choice == 2:
 				pass
 			elif choice == 3:
-				pass
+				num_tournament = check_input(input("Veuillez entrer le n° du tournoi (cf liste des tournois): "), "tournament")
+				print(sorted(table_tournament.get(doc_id=num_tournament)["joueurs"], key = lambda i: i["nom"]) )
 			elif choice == 4:
-				pass
+				num_tournament = check_input(input("Veuillez entrer le n° du tournoi (cf liste des tournois): "),
+											 "tournament")
+				print(sorted(table_tournament.get(doc_id=num_tournament)["joueurs"], key=lambda i: i["classement"]))
 			elif choice == 5:
-				pass
+				print("Liste des tournois\n\n")
+				for row in range(1,len(table_tournament)+1):
+					print(f"Tournoi n°{row}\n\n")
+					for category in tournament.categories:
+						print(category, ": ", table_tournament.get(doc_id=row)[category])
+					for player in table_tournament.get(doc_id=row)["joueurs"]:
+						print("joueurs : ", player["id"], player["nom"], player["prenom"])
+					print("\n\n")
+						#print("joueurs : ", table_tournament.get(doc_id=row)["joueurs"][6],"\n\n")
+					#for category in tournament.categories:
+					#	print(category, a[category], "LES CATEGORIES")
+
 			elif choice == 6:
 				# rounds of the tournament
 				print("Liste des tours d'un tournois\n\n")
+				print(table_tournament.search(query.name =="Mexique"), "MEXIQQQQQQQQQUE")
 				for i in range(9, 21):
 					print(table_tournament.get(doc_id=i), "\n\n")
 			elif choice == 7:

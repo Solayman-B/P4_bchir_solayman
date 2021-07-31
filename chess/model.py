@@ -12,7 +12,7 @@ class Tournament:
 		self.note = str()
 		self.rounds_list = []
 		self.nb_rounds = 4
-		self.categories = ["nom", "nombre_de_jours", "lieu", "control_du_temps", "nombre_de_rounds", "note"]
+		self.categories = ["nom", "lieu", "date_de_debut", "date_de_fin", "nombre_de_tours", "control_du_temps", "note"]
 
 
 class Players:

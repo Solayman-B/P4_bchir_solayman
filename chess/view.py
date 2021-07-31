@@ -27,8 +27,8 @@ class NewGameView:
 		tournament.location = "Paris"  # check_input(input("\nLieu du tournoi:\n\n>>> "), "")
 		tournament.time_control = "blitz"  # check_input(input("\nContrôle du temps de jeu:\n\nEntrez 'BT' pour bullet, 'BZ' pour blitz, 'CR' pour coup rapide:\n\n>>> "), 'T')
 		tournament.note = ""  # input("\nAjouter une remarque ou tapez 'Entrée' pour continuer:\n\n>>> ")
-		tournament.nb_rounds = 4  # check_input(input("Le nombre de rounds est de 4, entrez un nouveau nombre pour le modifier sinon appuyez sur 'Entrée':\n\n>>> "), "4")
-		return {"nom": tournament.name, "nombre_de_jours": tournament.nb_days, "date_du_debut": tournament.starting_date, "lieu": tournament.location, "control_du_temps": tournament.time_control, "nombre_de_rounds": tournament.nb_rounds, "note": tournament.note, "date_de_fin": tournament.ending_date, "debut_du_round_1": "", "matchs_du_round_1": [], "fin_du_round_1": "", "debut_du_round_2": "", "matchs_du_round_2": [], "fin_du_round_2": "", "debut_du_round_3": "", "matchs_du_round_3": [], "fin_du_round_3": "", "debut_du_round_4": "", "matchs_du_round_4": [], "fin_du_round_4": ""}
+		tournament.nb_rounds = 4  # check_input(input("Le nombre de tours est de 4, entrez un nouveau nombre pour le modifier sinon appuyez sur 'Entrée':\n\n>>> "), "rounds")
+		return {"nom": tournament.name, "lieu": tournament.location, "nombre_de_jours": tournament.nb_days, "date_de_debut": tournament.starting_date, "date_de_fin": tournament.ending_date, "nombre_de_tours": tournament.nb_rounds, "joueurs": "", "control_du_temps": tournament.time_control,"note": tournament.note, "debut_du_round_1": "", "matchs_du_round_1": [], "fin_du_round_1": "", "debut_du_round_2": "", "matchs_du_round_2": [], "fin_du_round_2": "", "debut_du_round_3": "", "matchs_du_round_3": [], "fin_du_round_3": "", "debut_du_round_4": "", "matchs_du_round_4": [], "fin_du_round_4": ""}
 
 class PlayersView:
 	# nombre de joueurs
@@ -55,7 +55,7 @@ class MatchView:
 #resultats = input()
 class ResultsView:
 	def enter_results(self, player):
-		results = "V" #random.choice("VDN") #check_input(input(f"\nJoueur: {player[6]}  \n\nEntrez 'V' pour une victoire, 'N' pour un match nul, et 'D' pour une défaite:\n\n>>> "), "V")
+		results = "V" #random.choice("VDN") #check_input(input(f"\nJoueur: {player[6]}  \n\nEntrez 'V' pour une victoire, 'N' pour un match nul, et 'D' pour une défaite:\n\n>>> "), "results")
 		return results
 
 class RapportsView:
