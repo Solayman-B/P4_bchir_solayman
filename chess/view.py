@@ -62,7 +62,7 @@ class RapportsView:
 
 
 	def choice(self):
-		choice = check_input(input("Vous souhaitez affichez un rapport contenant:"
+		choice = check_input(input("Vous souhaitez afficher un rapport contenant:"
 								   "\n\n1/ Les acteurs par ordre alphabétique"
 								   "\n\n2/ Les acteurs par classement"
 								   "\n\n3/ Les joueurs d'un tournoi par ordre alphabétique"

@@ -7,10 +7,9 @@ from operator import itemgetter
 
 
 class ApplicationController:
-
+	"""start the application"""
 	def __init__(self):
 		self.controller = None
-	"""start the application"""
 	def start(self):
 		self.controller = HomeMenuController()
 		while self.controller:
@@ -42,7 +41,6 @@ class NewGameController:
 	def __call__(self):
 		# enter the tournament informations
 		new_game_view = NewGameView()
-
 		for i in range(10):
 			value = new_game_view.get_user_info(tournament)
 		tiny.serialize(table_tournament, value)
@@ -53,10 +51,7 @@ class NewGameController:
 			tournament.date = tournament.starting_date
 			tournament.ending_date = tournament.starting_date
 		tiny.update(table_tournament, {"date_de_fin": tournament.ending_date}, query.date_de_debut == tournament.starting_date)
-
-
 		print("\n", tournament.name, tournament.location, tournament.date, tournament.time_control, "\n")
-
 		return PlayersController
 
 class PlayersController():
@@ -64,7 +59,8 @@ class PlayersController():
 	def __call__(self):
 		model_player = Players()
 		view_player = PlayersView()
-		# récupérer joueurs déjà présents dans la DB
+		"""RECUPERER JOUEURS DEJA PRESENTS DANS LA DB &&&&&&&&&&&&&&&&&&&&&&&&&&&"""
+		# récupérer joueurs déjà présents dans la DB &&&&&&&&&&&&&&&&&&&&&&&&&&& A FAIRE
 		model_player.nb_players = view_player.nb_players(model_player.nb_players)
 		players = [Players() for i in range(model_player.nb_players)]
 		for player in players:
@@ -79,19 +75,18 @@ class PlayersController():
 		for player in model_player.list_of_players:
 			tiny.serialize(table_players, player)
 			z += 1
-
-		"""starting the rounds of the tournament"""
 		ranking_update = RankingUpdateController()
 		ranking_controller = RankingController()
+		"""starting the rounds of the tournament"""
 		for i in range(tournament.nb_rounds):
 			# if check_input(input("Si vous souhaitez modifier le classement tapez 'C' sinon appuyez sur la touche 'Entrée':\n\n>>> "), "ranking"):
 			#	ranking_update.rank_players(round.ranked_list_of_players)
 			round.starting_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
 			tiny.update(table_tournament, {f"debut_du_round {i+1}": round.starting_round}, query.date_de_debut == tournament.starting_date)
 			print(f"le round {i+1} à débuté le {round.starting_round} \n")
-			"""sort players in two lists"""
+			# sort players in two lists
 			ranking_controller.rank_this_list(model_player.list_of_players, i)
-			"""adding points to each player"""
+			# adding points to each player
 			ranking_controller.enter_results()
 			tiny.update(table_tournament, {f"matchs du round {i + 1}": round.matchs_of_this_round_db}, query.date_de_debut == tournament.starting_date)
 			round.matchs_of_this_round_db.clear()
@@ -104,13 +99,11 @@ class PlayersController():
 			print(f"le round {i+1} s'est terminé le {round.finishing_round}\n\n			**********\n")
 		# if check_input(input("Si vous souhaitez modifier le classement tapez 'C' sinon appuyez sur la touche 'Entrée':\n\n>>> "), "ranking"):
 		#	ranking_update.rank_players(round.ranked_list_of_players)
-
-
 		print("Fin du tournoi.")
 
 class RankingController:
-	"""sort the players by points (4), and if they're equal by ranking (5), and split them into two separated lists"""
 	def play_it(self, p1, p2, lenth_ranked_list_of_players):
+		"""verify that the number of matchs is not already complete before playing another one"""
 		match_view = MatchView()
 		if len(round.list_of_matchs_of_this_round) != lenth_ranked_list_of_players:
 			match_view.display_match(color.random(), (p1["id"], p1["nom"], p1["prenom"]), (p2["id"], p2["nom"], p2["prenom"]))
@@ -118,6 +111,7 @@ class RankingController:
 			round.list_of_matchs_of_this_round.append(match)
 
 	def is_match_already_played(self, p1, p2, lenth_ranked_list_of_players):
+		"""verify that a match hasn't been played before, then play it, otherwise split the two players and add them to a waiting to another player list"""
 		if (p1["id"], p2["id"]) in round.list_of_played_matchs or (p2["id"], p1["id"]) in round.list_of_played_matchs:
 			round.players_to_reintegrate.append(p1)
 			round.players_to_reintegrate.append(p2)
@@ -125,6 +119,7 @@ class RankingController:
 			self.play_it(p1, p2, lenth_ranked_list_of_players)
 
 	def rank_this_list(self, list_of_players, i):
+		"""sort the players by points and if they're equal by ranking, then split them into two separated lists, and match them by two"""
 		list_of_players = sorted(list_of_players, key=lambda i: i['classement'])
 		round.ranked_list_of_players = sorted(list_of_players, key=lambda i: i['nombre_de_points'], reverse=True)
 		lenth_ranked_list_of_players = len(round.ranked_list_of_players) // 2
@@ -137,6 +132,7 @@ class RankingController:
 		else:
 			while len(round.list_of_matchs_of_this_round) != lenth_ranked_list_of_players:
 				for p1, p2 in zip(list_of_players[::2], list_of_players[1::2]):
+					# verify if there's any player in the waiting to another player list to form a match
 					if round.players_to_reintegrate:
 						p3 = round.players_to_reintegrate.pop()
 						p4 = round.players_to_reintegrate.pop()
@@ -158,7 +154,7 @@ class RankingController:
 				player["nombre_de_points"] += 0.5
 			else:
 				player["nombre_de_points"] += 0.0
-			#mise à jour de la db avec les nouveaux points
+			# updating database with the new points
 			nb_points = player["nombre_de_points"]
 			tiny.update(table_players, {"nombre_de_points": nb_points}, query.id == player["id"])
 		for match in round.list_of_matchs_of_this_round:
@@ -170,28 +166,29 @@ class ResumeGameController:
 		print("resumegame controller")
 
 class RapportsController:
+	"""printing rapports to the user"""
 	def __call__(self):
 		rapport = RapportsView()
 		choice = rapport.choice()
 		app = ApplicationController()
 
 		while rapport:
-			"""\n\n1/ Les acteurs par ordre alphabétique"
-			
-			   "\n\n2/ Les acteurs par classement"
-			   """
-
+			# alphabeticall sorting of all the actors
 			if choice == 1:
-				pass
+				print(sorted(table_players, key=lambda i: i["nom"]))
+			# rank sorting of all the actors
 			elif choice == 2:
-				pass
+				print(sorted(table_players, key=lambda i: i["classement"]))
+			# alphabeticall sorting of players of a tournament
 			elif choice == 3:
 				num_tournament = check_input(input("Veuillez entrer le n° du tournoi (cf liste des tournois): "), "tournament")
 				print(sorted(table_tournament.get(doc_id=num_tournament)["joueurs"], key = lambda i: i["nom"]) )
+			# rank sorting of players of a tournament
 			elif choice == 4:
 				num_tournament = check_input(input("Veuillez entrer le n° du tournoi (cf liste des tournois): "),
 											 "tournament")
 				print(sorted(table_tournament.get(doc_id=num_tournament)["joueurs"], key=lambda i: i["classement"]))
+			# tournaments list
 			elif choice == 5:
 				print("Liste des tournois\n\n")
 				for row in range(1,len(table_tournament)+1):
@@ -204,20 +201,19 @@ class RapportsController:
 						#print("joueurs : ", table_tournament.get(doc_id=row)["joueurs"][6],"\n\n")
 					#for category in tournament.categories:
 					#	print(category, a[category], "LES CATEGORIES")
-
+			# rounds of a tournament list
 			elif choice == 6:
-				# rounds of the tournament
 				print("Liste des tours d'un tournois\n\n")
 				print(table_tournament.search(query.name =="Mexique"), "MEXIQQQQQQQQQUE")
 				for i in range(9, 21):
 					print(table_tournament.get(doc_id=i), "\n\n")
+			# matchs of a tournament list
 			elif choice == 7:
-				# matchs of the tournament
 				print("Liste des matchs d'un tournoi\n\n")
 				for i in (10, 13, 16, 19):
 					print(*table_tournament.get(doc_id=i).values(), "\n\n")
+			# return to the home menu
 			else:
-				# return to the home menu
 				app.start()
 				break
 			choice = rapport.choice()
@@ -226,6 +222,7 @@ class RapportsController:
 
 
 class RankingUpdateController:
+	"""modifying the ranking of players"""
 	def rank_players(self, list):
 		i = 0
 		for player in list:
