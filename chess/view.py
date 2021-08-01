@@ -28,7 +28,7 @@ class NewGameView:
 		tournament.time_control = "blitz"  # check_input(input("\nContrôle du temps de jeu:\n\nEntrez 'BT' pour bullet, 'BZ' pour blitz, 'CR' pour coup rapide:\n\n>>> "), 'T')
 		tournament.note = ""  # input("\nAjouter une remarque ou tapez 'Entrée' pour continuer:\n\n>>> ")
 		tournament.nb_rounds = 4  # check_input(input("Le nombre de tours est de 4, entrez un nouveau nombre pour le modifier sinon appuyez sur 'Entrée':\n\n>>> "), "rounds")
-		return {"nom": tournament.name, "lieu": tournament.location, "nombre_de_jours": tournament.nb_days, "date_de_debut": tournament.starting_date, "date_de_fin": tournament.ending_date, "nombre_de_tours": tournament.nb_rounds, "joueurs": "", "control_du_temps": tournament.time_control,"note": tournament.note, "debut_du_round_1": "", "matchs_du_round_1": [], "fin_du_round_1": "", "debut_du_round_2": "", "matchs_du_round_2": [], "fin_du_round_2": "", "debut_du_round_3": "", "matchs_du_round_3": [], "fin_du_round_3": "", "debut_du_round_4": "", "matchs_du_round_4": [], "fin_du_round_4": ""}
+		return {"nom": tournament.name, "lieu": tournament.location, "nombre_de_jours": tournament.nb_days, "date_de_debut": tournament.starting_date, "date_de_fin": tournament.ending_date, "nombre_de_tours": tournament.nb_rounds, "joueurs": "", "control_du_temps": tournament.time_control, "note": tournament.note, "debut_du_round_1": "", "matchs_du_round_1": [], "fin_du_round_1": "", "debut_du_round_2": "", "matchs_du_round_2": [], "fin_du_round_2": "", "debut_du_round_3": "", "matchs_du_round_3": [], "fin_du_round_3": "", "debut_du_round_4": "", "matchs_du_round_4": [], "fin_du_round_4": "", "id": tournament.id}
 
 class PlayersView:
 	# nombre de joueurs
@@ -44,7 +44,7 @@ class PlayersView:
 		player.sex =""# check_input(input("\nSon sexe 'H' ou 'F':\n\n>>> "), "H")
 		player.points = 0.0
 		player.ranking =""# check_input(input("\nSon rang:\n\n>>> "), int)
-		return {"nom": player.name, "prenom": player.surname, "date de naissance": player.date_of_birth, "sexe": player.sex, "nombre de points": player.points, "classement": player.ranking, "id": player.id}
+		return {"nom": player.name, "prenom": player.surname, "date_de_naissance": player.date_of_birth, "sexe": player.sex, "nombre_de_points": player.points, "classement": player.ranking, "id": player.id}
 
 
 class MatchView:
@@ -62,7 +62,7 @@ class RapportsView:
 
 
 	def choice(self):
-		choice = check_input(input("Vous souhaitez afficher un rapport contenant:"
+		choice = check_input(input("\nVous souhaitez afficher un rapport contenant:"
 								   "\n\n1/ Les acteurs par ordre alphabétique"
 								   "\n\n2/ Les acteurs par classement"
 								   "\n\n3/ Les joueurs d'un tournoi par ordre alphabétique"

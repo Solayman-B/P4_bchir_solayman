@@ -44,13 +44,17 @@ class NewGameController:
 		for i in range(10):
 			value = new_game_view.get_user_info(tournament)
 		tiny.serialize(table_tournament, value)
+		# update the tournament id
+		new_id = len(table_tournament)
+		print(new_id)
+		tiny.update(table_tournament, {"id": new_id}, query.id == 0)
 		if tournament.nb_days > 1:
 			tournament.ending_date = (datetime.datetime.now() + datetime.timedelta(days=tournament.nb_days)).strftime('%d/%m/%Y')
 			tournament.date = f"du {tournament.starting_date} au {tournament.ending_date}"
 		else:
 			tournament.date = tournament.starting_date
 			tournament.ending_date = tournament.starting_date
-		tiny.update(table_tournament, {"date_de_fin": tournament.ending_date}, query.date_de_debut == tournament.starting_date)
+		tiny.update(table_tournament, {"date_de_fin": tournament.ending_date}, query.id == len(table_tournament))
 		print("\n", tournament.name, tournament.location, tournament.date, tournament.time_control, "\n")
 		return PlayersController
 
@@ -71,7 +75,7 @@ class PlayersController():
 		#print(table_tournament.get(doc_id=1)["joueurs"])
 		z = 0
 		tiny.update(table_tournament, {"joueurs": tuple(model_player.list_of_players)},
-					query.date_de_debut == tournament.starting_date)
+					query.id == len(table_tournament))
 		for player in model_player.list_of_players:
 			tiny.serialize(table_players, player)
 			z += 1
@@ -82,16 +86,16 @@ class PlayersController():
 			# if check_input(input("Si vous souhaitez modifier le classement tapez 'C' sinon appuyez sur la touche 'Entrée':\n\n>>> "), "ranking"):
 			#	ranking_update.rank_players(round.ranked_list_of_players)
 			round.starting_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
-			tiny.update(table_tournament, {f"debut_du_round {i+1}": round.starting_round}, query.date_de_debut == tournament.starting_date)
+			tiny.update(table_tournament, {f"debut_du_round_{i+1}": round.starting_round}, query.id == len(table_tournament))
 			print(f"le round {i+1} à débuté le {round.starting_round} \n")
 			# sort players in two lists
 			ranking_controller.rank_this_list(model_player.list_of_players, i)
 			# adding points to each player
 			ranking_controller.enter_results()
-			tiny.update(table_tournament, {f"matchs du round {i + 1}": round.matchs_of_this_round_db}, query.date_de_debut == tournament.starting_date)
+			tiny.update(table_tournament, {f"matchs_du_round_{i + 1}": round.matchs_of_this_round_db}, query.id == len(table_tournament))
 			round.matchs_of_this_round_db.clear()
 			round.finishing_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
-			tiny.update(table_tournament, {f"fin du round {i+1}": round.finishing_round}, query.date_de_debut == tournament.starting_date)
+			tiny.update(table_tournament, {f"fin_du_round_{i+1}": round.finishing_round}, query.id == len(table_tournament))
 			round.list_of_matchs_of_this_round.insert(0, round.starting_round)
 			round.list_of_matchs_of_this_round.append(round.finishing_round)
 			tournament.rounds_list.append((f"Round{i+1}", round.list_of_matchs_of_this_round))
@@ -175,43 +179,48 @@ class RapportsController:
 		while rapport:
 			# alphabeticall sorting of all the actors
 			if choice == 1:
+				print("Liste des acteurs par ordre alphabétique:\n")
 				print(sorted(table_players, key=lambda i: i["nom"]))
 			# rank sorting of all the actors
 			elif choice == 2:
+				print("Liste des acteurs par classement:\n")
 				print(sorted(table_players, key=lambda i: i["classement"]))
 			# alphabeticall sorting of players of a tournament
 			elif choice == 3:
-				num_tournament = check_input(input("Veuillez entrer le n° du tournoi (cf liste des tournois): "), "tournament")
+				num_tournament = check_input(input("\n\nVeuillez entrer le n° du tournoi (cf liste des tournois):\n"), "tournament")
+				print(f"Liste des joueurs du tournoi n°{num_tournament} par ordre alphabétique:\n")
 				print(sorted(table_tournament.get(doc_id=num_tournament)["joueurs"], key = lambda i: i["nom"]) )
 			# rank sorting of players of a tournament
 			elif choice == 4:
-				num_tournament = check_input(input("Veuillez entrer le n° du tournoi (cf liste des tournois): "),
+				num_tournament = check_input(input("\nVeuillez entrer le n° du tournoi (cf liste des tournois): "),
 											 "tournament")
+				print(f"Liste des joueurs du tournoi n°{num_tournament} par classement:\n")
 				print(sorted(table_tournament.get(doc_id=num_tournament)["joueurs"], key=lambda i: i["classement"]))
 			# tournaments list
 			elif choice == 5:
-				print("Liste des tournois\n\n")
+				print("Liste des tournois:\n")
 				for row in range(1,len(table_tournament)+1):
-					print(f"Tournoi n°{row}\n\n")
+					print(f"Tournoi n°{row}\n")
 					for category in tournament.categories:
 						print(category, ": ", table_tournament.get(doc_id=row)[category])
 					for player in table_tournament.get(doc_id=row)["joueurs"]:
 						print("joueurs : ", player["id"], player["nom"], player["prenom"])
-					print("\n\n")
-						#print("joueurs : ", table_tournament.get(doc_id=row)["joueurs"][6],"\n\n")
-					#for category in tournament.categories:
-					#	print(category, a[category], "LES CATEGORIES")
+					print("\n")
 			# rounds of a tournament list
 			elif choice == 6:
-				print("Liste des tours d'un tournois\n\n")
-				print(table_tournament.search(query.name =="Mexique"), "MEXIQQQQQQQQQUE")
-				for i in range(9, 21):
-					print(table_tournament.get(doc_id=i), "\n\n")
+				num_tournament = check_input(input("\n\nVeuillez entrer le n° du tournoi (cf liste des tournois):\n"),
+											 "tournament")
+				print(f"Liste des tours du tournoi n°{num_tournament}:\n")
+				for i in range(1, 5):
+					print(f"Round {i}:", table_tournament.get(doc_id=num_tournament)[f"debut_du_round_{i}"], *table_tournament.get(doc_id=num_tournament)[f"matchs_du_round_{i}"], table_tournament.get(doc_id=num_tournament)[f"fin_du_round_{i}"],
+						  "\n")
 			# matchs of a tournament list
 			elif choice == 7:
-				print("Liste des matchs d'un tournoi\n\n")
-				for i in (10, 13, 16, 19):
-					print(*table_tournament.get(doc_id=i).values(), "\n\n")
+				num_tournament = check_input(input("\n\nVeuillez entrer le n° du tournoi (cf liste des tournois):\n"),
+											 "tournament")
+				print(f"Liste des matchs du tournoi n°{num_tournament}:\n")
+				for i in range(1,5):
+					print(*table_tournament.get(doc_id=num_tournament)[f"matchs_du_round_{i}"], "\n")
 			# return to the home menu
 			else:
 				app.start()
