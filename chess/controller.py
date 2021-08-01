@@ -79,17 +79,19 @@ class PlayersController():
 		for player in model_player.list_of_players:
 			tiny.serialize(table_players, player)
 			z += 1
+		self.let_it_go(model_player.list_of_players, range(tournament.nb_rounds))
+	def let_it_go(self, list_of_players, nb_rounds):
+		"""starting the rounds of the tournament"""
 		ranking_update = RankingUpdateController()
 		ranking_controller = RankingController()
-		"""starting the rounds of the tournament"""
-		for i in range(tournament.nb_rounds):
+		for i in nb_rounds:
 			# if check_input(input("Si vous souhaitez modifier le classement tapez 'C' sinon appuyez sur la touche 'Entrée':\n\n>>> "), "ranking"):
 			#	ranking_update.rank_players(round.ranked_list_of_players)
 			round.starting_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
 			tiny.update(table_tournament, {f"debut_du_round_{i+1}": round.starting_round}, query.id == len(table_tournament))
 			print(f"le round {i+1} à débuté le {round.starting_round} \n")
 			# sort players in two lists
-			ranking_controller.rank_this_list(model_player.list_of_players, i)
+			ranking_controller.rank_this_list(list_of_players, i)
 			# adding points to each player
 			ranking_controller.enter_results()
 			tiny.update(table_tournament, {f"matchs_du_round_{i + 1}": round.matchs_of_this_round_db}, query.id == len(table_tournament))
@@ -167,7 +169,12 @@ class RankingController:
 
 class ResumeGameController:
 	def __call__(self):
-		print("resumegame controller")
+		player = PlayersController()
+		num_tournament = check_input(input("\n\nVeuillez entrer le n° du tournoi (cf liste des tournois):\n"), "tournament")
+		round = check_input(input("Indiquez le tour que vous souhaitez poursuivre:\n\n"), "resuming_round")
+		nb_rounds = range(round -1, tournament.nb_rounds)
+		list_of_players = sorted(table_tournament.get(doc_id= num_tournament)["joueurs"], key=lambda i: i["classement"])
+		player.let_it_go(list_of_players, nb_rounds)
 
 class RapportsController:
 	"""printing rapports to the user"""

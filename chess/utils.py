@@ -51,6 +51,15 @@ def check_input(info, key):
 				info = input(f"\nLe numéro de tournoi n'existe pas, veuillez entrez un nombre compris entre 1 et {len(table_tournament)} svp: ")
 			else:
 				return int(info)
+	# resuming round
+	elif key == "resuming_round":
+		while info.isdigit() == False:
+			info = input("\nVeuillez entrez un nombre svp: ")
+		else:
+			while int(info) not in range(1,5):
+				info = input(f"\nLe numéro de round n'existe pas, veuillez entrez un nombre compris entre 1 et {tournament.nb_rounds} svp: ")
+			else:
+				return int(info)
 
 
 tournament = Tournament()
