@@ -9,6 +9,15 @@ def check_input(info, key):
 		while info == "":
 			info = input("\nVeuillez entrez une saisie valide svp: ")
 		return info
+	# nulber of imported players
+	elif key == "players":
+		while info.isdigit() == False:
+			info = input("\nVeuillez entrer un chiffre svp: ")
+		else:
+			while int(info) not in range(0, len(table_players)):
+				info = input(
+					f"\nLe nombre de joueurs à importer ne correspond pas, veuillez entrez un nombre compris entre 0 et {len(table_players)} svp: ")
+		return int(info)
 	# number
 	elif key == int:
 		while info.isdigit() == False:
@@ -36,8 +45,8 @@ def check_input(info, key):
 		else:
 			return 4
 	# ranking
-	elif key == "ranking":
-		if info.upper() == "C":
+	elif key == "ON":
+		if info.upper() == "O":
 			return info.upper
 		else:
 			info = ""

@@ -46,7 +46,6 @@ class NewGameController:
 		tiny.serialize(table_tournament, value)
 		# update the tournament id
 		new_id = len(table_tournament)
-		print(new_id)
 		tiny.update(table_tournament, {"id": new_id}, query.id == 0)
 		if tournament.nb_days > 1:
 			tournament.ending_date = (datetime.datetime.now() + datetime.timedelta(days=tournament.nb_days)).strftime('%d/%m/%Y')
@@ -65,27 +64,37 @@ class PlayersController():
 		view_player = PlayersView()
 		"""RECUPERER JOUEURS DEJA PRESENTS DANS LA DB &&&&&&&&&&&&&&&&&&&&&&&&&&&"""
 		# récupérer joueurs déjà présents dans la DB &&&&&&&&&&&&&&&&&&&&&&&&&&& A FAIRE
+		if table_players:
+			print("\n\nParmis ces joueurs déjà enregistrés, combien voulez vous en importer ?\n")
+			for player in sorted(table_players, key=lambda i: i['id']):
+				print(player["id"], player["nom"], player["prenom"])
+			nb_imported_players = check_input(input(f"\n\nEntrez un chiffre entre 0 et {len(table_players)}\n>>> "), 'players')
+			for i in range(nb_imported_players):
+				check_input(input(f"\n\nQuel est l'id du joueur que vous souhaitez importer?\n>>> "), 'players')
+
+
+
+
+
+
+
+
 		model_player.nb_players = view_player.nb_players(model_player.nb_players)
 		players = [Players() for i in range(model_player.nb_players)]
-		for player in players:
-			model_player.list_of_players.append(view_player.enter_new_player(player))
-		""" MODIFIE LA LISTE 'Players.list' POUR LES TESTS """
-		model_player.list_of_players = [{"nom": "Delafontaine", "prenom": "Jean", "date_de_naissance": "01/06/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 25, "id": 1}, {"nom": "Sarkozy", "prenom": "Nicolas", "date_de_naissance": "01/07/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 32, "id": 2}, {"nom": "Mouse", "prenom": "Mickey", "date_de_naissance": "01/08/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 21, "id": 3}, {"nom": "Elephant", "prenom": "Babar", "date_de_naissance": "01/09/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 14, "id": 4}, {"nom": "Bond", "prenom": "James", "date_de_naissance": "01/10/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 85, "id": 5}, {"nom": "Neige", "prenom": "Anna", "date_de_naissance": "01/11/1991", "sexe": "f", "nombre_de_points": 0.0, "classement": 66, "id": 6}, {"nom": "Baba", "prenom": "Ali", "date_de_naissance": "01/12/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 47, "id": 7}, {"nom": "Ourson", "prenom": "Winnie", "date_de_naissance": "01/01/1991", "sexe": "h", "nombre_de_points": 0.0, "classement": 48, "id": 8}]
-		"""  MODIFIE LA LISTE 'Players.list' POUR LES TESTS """
-		#print(table_tournament.get(doc_id=1)["joueurs"])
-		z = 0
-		tiny.update(table_tournament, {"joueurs": tuple(model_player.list_of_players)},
-					query.id == len(table_tournament))
+		for player, i in zip(players, range(1,9)):
+			ids = len(table_players) + i
+			model_player.list_of_players.append(view_player.enter_new_player(player, ids))
 		for player in model_player.list_of_players:
 			tiny.serialize(table_players, player)
-			z += 1
+		tiny.update(table_tournament, {"joueurs": tuple(model_player.list_of_players)},
+					query.id == len(table_tournament))
 		self.let_it_go(model_player.list_of_players, range(tournament.nb_rounds))
 	def let_it_go(self, list_of_players, nb_rounds):
 		"""starting the rounds of the tournament"""
 		ranking_update = RankingUpdateController()
 		ranking_controller = RankingController()
 		for i in nb_rounds:
-			# if check_input(input("Si vous souhaitez modifier le classement tapez 'C' sinon appuyez sur la touche 'Entrée':\n\n>>> "), "ranking"):
+			# if check_input(input("Souhaitez vous modifier le classement:\n  Oui tapez 'O' Non tapez "N"\n>>> "), "ON"):
 			#	ranking_update.rank_players(round.ranked_list_of_players)
 			round.starting_round = datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
 			tiny.update(table_tournament, {f"debut_du_round_{i+1}": round.starting_round}, query.id == len(table_tournament))
@@ -103,7 +112,7 @@ class PlayersController():
 			tournament.rounds_list.append((f"Round{i+1}", round.list_of_matchs_of_this_round))
 			round.list_of_matchs_of_this_round.clear()
 			print(f"le round {i+1} s'est terminé le {round.finishing_round}\n\n			**********\n")
-		# if check_input(input("Si vous souhaitez modifier le classement tapez 'C' sinon appuyez sur la touche 'Entrée':\n\n>>> "), "ranking"):
+		# if check_input(input("Si vous souhaitez modifier le classement tapez 'C' sinon appuyez sur la touche 'Entrée':\n>>> "), "ranking"):
 		#	ranking_update.rank_players(round.ranked_list_of_players)
 		print("Fin du tournoi.")
 
@@ -170,8 +179,8 @@ class RankingController:
 class ResumeGameController:
 	def __call__(self):
 		player = PlayersController()
-		num_tournament = check_input(input("\n\nVeuillez entrer le n° du tournoi (cf liste des tournois):\n"), "tournament")
-		round = check_input(input("Indiquez le tour que vous souhaitez poursuivre:\n\n"), "resuming_round")
+		num_tournament = check_input(input("\n\nVeuillez entrer le n° du tournoi (cf liste des tournois):\n>>> "), "tournament")
+		round = check_input(input("Indiquez le tour que vous souhaitez poursuivre:\n>>> "), "resuming_round")
 		nb_rounds = range(round -1, tournament.nb_rounds)
 		list_of_players = sorted(table_tournament.get(doc_id= num_tournament)["joueurs"], key=lambda i: i["classement"])
 		player.let_it_go(list_of_players, nb_rounds)
@@ -194,12 +203,12 @@ class RapportsController:
 				print(sorted(table_players, key=lambda i: i["classement"]))
 			# alphabeticall sorting of players of a tournament
 			elif choice == 3:
-				num_tournament = check_input(input("\n\nVeuillez entrer le n° du tournoi (cf liste des tournois):\n"), "tournament")
+				num_tournament = check_input(input("\n\nVeuillez entrer le n° du tournoi (cf liste des tournois):\n>>> "), "tournament")
 				print(f"Liste des joueurs du tournoi n°{num_tournament} par ordre alphabétique:\n")
 				print(sorted(table_tournament.get(doc_id=num_tournament)["joueurs"], key = lambda i: i["nom"]) )
 			# rank sorting of players of a tournament
 			elif choice == 4:
-				num_tournament = check_input(input("\nVeuillez entrer le n° du tournoi (cf liste des tournois): "),
+				num_tournament = check_input(input("\nVeuillez entrer le n° du tournoi (cf liste des tournois):\n>>> "),
 											 "tournament")
 				print(f"Liste des joueurs du tournoi n°{num_tournament} par classement:\n")
 				print(sorted(table_tournament.get(doc_id=num_tournament)["joueurs"], key=lambda i: i["classement"]))
@@ -215,7 +224,7 @@ class RapportsController:
 					print("\n")
 			# rounds of a tournament list
 			elif choice == 6:
-				num_tournament = check_input(input("\n\nVeuillez entrer le n° du tournoi (cf liste des tournois):\n"),
+				num_tournament = check_input(input("\n\nVeuillez entrer le n° du tournoi (cf liste des tournois):\n>>> "),
 											 "tournament")
 				print(f"Liste des tours du tournoi n°{num_tournament}:\n")
 				for i in range(1, 5):
@@ -223,7 +232,7 @@ class RapportsController:
 						  "\n")
 			# matchs of a tournament list
 			elif choice == 7:
-				num_tournament = check_input(input("\n\nVeuillez entrer le n° du tournoi (cf liste des tournois):\n"),
+				num_tournament = check_input(input("\n\nVeuillez entrer le n° du tournoi (cf liste des tournois):\n>>> "),
 											 "tournament")
 				print(f"Liste des matchs du tournoi n°{num_tournament}:\n")
 				for i in range(1,5):
@@ -242,7 +251,7 @@ class RankingUpdateController:
 	def rank_players(self, list):
 		i = 0
 		for player in list:
-			ranking = check_input(input(f"Entrez le nouveau rang du joueur : {player}:\n\n>>> "), int)
+			ranking = check_input(input(f"Entrez le nouveau rang du joueur : {player}:\n>>> "), int)
 			list.pop(0)
 			player[5] = ranking
 			list.insert(0,player)

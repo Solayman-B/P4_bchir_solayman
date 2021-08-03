@@ -17,7 +17,7 @@ class Tournament:
 
 
 class Players:
-	id = 0
+	id = 1
 	def __init__(self):
 		self.name = str()
 		self.surname = str()
