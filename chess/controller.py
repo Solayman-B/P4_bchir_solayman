@@ -62,30 +62,24 @@ class PlayersController():
 	def __call__(self):
 		model_player = Players()
 		view_player = PlayersView()
-		"""RECUPERER JOUEURS DEJA PRESENTS DANS LA DB &&&&&&&&&&&&&&&&&&&&&&&&&&&"""
-		# récupérer joueurs déjà présents dans la DB &&&&&&&&&&&&&&&&&&&&&&&&&&& A FAIRE
+		model_player.list_of_players.clear()
+
 		if table_players:
 			print("\n\nParmis ces joueurs déjà enregistrés, combien voulez vous en importer ?\n")
 			for player in sorted(table_players, key=lambda i: i['id']):
 				print(player["id"], player["nom"], player["prenom"])
 			nb_imported_players = check_input(input(f"\n\nEntrez un chiffre entre 0 et {len(table_players)}\n>>> "), 'players')
 			for i in range(nb_imported_players):
-				check_input(input(f"\n\nQuel est l'id du joueur que vous souhaitez importer?\n>>> "), 'players')
-
-
-
-
-
-
-
-
+				imported_player_id = check_input(input(f"\n\nQuel est l'id du joueur que vous souhaitez importer?\n>>> "), 'players')
+				model_player.list_of_players.append(table_players.get(doc_id=imported_player_id))
 		model_player.nb_players = view_player.nb_players(model_player.nb_players)
 		players = [Players() for i in range(model_player.nb_players)]
 		for player, i in zip(players, range(1,9)):
 			ids = len(table_players) + i
 			model_player.list_of_players.append(view_player.enter_new_player(player, ids))
 		for player in model_player.list_of_players:
-			tiny.serialize(table_players, player)
+			if player not in table_players:
+				tiny.serialize(table_players, player)
 		tiny.update(table_tournament, {"joueurs": tuple(model_player.list_of_players)},
 					query.id == len(table_tournament))
 		self.let_it_go(model_player.list_of_players, range(tournament.nb_rounds))

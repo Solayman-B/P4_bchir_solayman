@@ -12,12 +12,3 @@ class Tinydb:
 
 	def update(self, table, value, key):
 		table.update(value, key)
-
-	def deserealize(key,table, value):
-		for item in db:
-			pass
-
-	#db.truncate()
-
-	#print(db.all())
-
