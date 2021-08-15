@@ -1,6 +1,4 @@
-from controller import ApplicationController
+from controller import HomeMenuController
 
 
-app = ApplicationController()
-
-app.start()
+home_menu = HomeMenuController()
