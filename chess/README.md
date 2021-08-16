@@ -3,16 +3,16 @@
 Summaries
 ---------
 
-General description
-Requirements
-Installation
-Run the script
+* General description
+* Requirements
+* Installation
+* Run the script
 
 General description
 -------------
 
 This script is a chess tournament manager, you can add players, date, place, and choose between multiples games modes.
-It uses Swiss method to organize the different rounds. You can save and continue a tournament on the go, and reuse the players on others tournaments.
+It uses Swiss method to organize the different rounds. You can save and continue a tournament on the go, and reuse the players from others tournaments.
 All the information are automatically saved in a local database with TinyDB.
 
 Requirements
@@ -20,17 +20,9 @@ Requirements
 
 This script uses the following packets:
 
-* beautifulsoup4==4.9.3
-* bs4==0.0.1
-* certifi==2020.12.5
-* chardet==4.0.0
-* idna==2.10
-* lxml==4.6.3
-* Pillow==8.2.0
-* requests==2.25.1
-* soupsieve==2.2.1
-* urllib3==1.26.4
-
+* python-dateutil==2.8.1
+* tinydb==4.5.0
+* virtualenv==20.4.6
 
 Installation
 ------------
@@ -62,19 +54,23 @@ On Unix or macOS, run:
 
     source env/bin/activate
 
+And to deactivate simply use:
+
+    deactivate
+
 You can install all the required paquets with:
 
     pip install -r requirements.txt
 
+To generate a flake8-html file, go on the folder containing the project and use:
+
+    flake8 --max-line-length 119 --format=html --htmldir=flake-report chess/
+
+it will generate a flake-report folder containing the html file
+
 Run
 ---
 
-Go to the root of the file with python3, and use `python3 main.py` to run the code
+Go on the folder containing the project and use `python3 main.py` to run the code and follow the inscuctions.
 
-
-
-
-
-
-flake8 --max-line-length 119 --format=html --htmldir=flake-report chess/
 
