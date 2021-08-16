@@ -20,9 +20,26 @@ Requirements
 
 This script uses the following packets:
 
+* appdirs==1.4.4
+* black==21.7b0
+* click==8.0.1
+* flake8==3.9.2
+* flake8-html==0.4.1
+* importlib-metadata==4.6.4
+* Jinja2==3.0.1
+* MarkupSafe==2.0.1
+* mccabe==0.6.1
+* mypy-extensions==0.4.3
+* pathspec==0.9.0
+* pycodestyle==2.7.0
+* pyflakes==2.3.1
+* Pygments==2.10.0
 * python-dateutil==2.8.1
+* regex==2021.8.3
 * tinydb==4.5.0
+* tomli==1.2.1
 * virtualenv==20.4.6
+* zipp==3.5.0
 
 Installation
 ------------
@@ -64,7 +81,7 @@ You can install all the required paquets with:
 
 To generate a flake8-html file, go on the folder containing the project and use:
 
-    flake8 --max-line-length 119 --format=html --htmldir=flake-report chess/
+    flake8 --max-line-length 119 --format=html --htmldir=flake-report --exclude .git,__pycache__,env chess/
 
 it will generate a flake-report folder containing the html file
 
