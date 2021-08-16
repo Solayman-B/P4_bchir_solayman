@@ -136,9 +136,6 @@ class PlayersController:
         ranking_controller = RankingController()
         ranking_view = RankingView()
         for i in nb_rounds:
-            modify_ranking = ranking_view.modifying_ranking()
-            if modify_ranking:
-                ranking_update.rank_players(round.ranked_list_of_players)
             round.starting_round = datetime.datetime.now().strftime("%d/%m/%Y à %H:%M")
             tiny.update(
                 table_tournament,
@@ -171,9 +168,9 @@ class PlayersController:
             print(
                 f"le round {i+1} s'est terminé le {round.finishing_round}\n\n			**********\n"
             )
-        modify_ranking = ranking_view.modifying_ranking()
-        if modify_ranking:
-            ranking_update.rank_players(round.ranked_list_of_players)
+            modify_ranking = ranking_view.modifying_ranking()
+            if modify_ranking:
+                ranking_update.rank_players(round.ranked_list_of_players)
         print("Fin du tournoi.")
 
 
