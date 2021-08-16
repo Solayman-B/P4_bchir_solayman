@@ -76,4 +76,5 @@ Go to the root of the file with python3, and use `python3 main.py` to run the co
 
 
 
-flake8 --max-line-length 119 chess/
+flake8 --max-line-length 119 --format=html --htmldir=flake-report chess/
+
