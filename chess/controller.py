@@ -349,31 +349,34 @@ class RapportsController:
             elif choice == 6:
                 num_tournament = rapport_view.tournament_number()
                 print(f"Liste des tours du tournoi n°{num_tournament}:\n")
-                for i in range(1, 5):
+                dict = sorted(table_players, key=lambda i: i["id"])
+                for y in range(1, 5):
                     print(
-                        f"Round {i}:",
+                        f"Round {y}:",
                         table_tournament.get(doc_id=num_tournament)[
-                            f"debut_du_round_{i}"
-                        ],
-                        *table_tournament.get(doc_id=num_tournament)[
-                            f"matchs_du_round_{i}"
-                        ],
-                        table_tournament.get(doc_id=num_tournament)[
-                            f"fin_du_round_{i}"
-                        ],
-                        "\n",
-                    )
+                            f"debut_du_round_{y}"
+                        ])
+                    for i in range(4):
+                        print("Joueur n°{id}    {nom}   {prenom}    {nombre_de_points}pts".format_map(
+                            dict[table_tournament.get(doc_id=num_tournament)[f"matchs_du_round_{y}"][i][0][
+                                     0] - 1]) + " vs " + "Joueur n°{id}    {nom}   {prenom}    {nombre_de_points}pts\n".format_map(
+                            dict[table_tournament.get(doc_id=num_tournament)[f"matchs_du_round_{y}"][i][1][
+                                     0] - 1]))  # match, joueur, id
+                    print(table_tournament.get(doc_id=num_tournament)[
+                            f"fin_du_round_{y}"
+                        ])
             # matchs of a tournament list
             elif choice == 7:
                 num_tournament = rapport_view.tournament_number()
                 print(f"Liste des matchs du tournoi n°{num_tournament}:\n")
-                for i in range(1, 5):
-                    print(
-                        *table_tournament.get(doc_id=num_tournament)[
-                            f"matchs_du_round_{i}"
-                        ],
-                        "\n",
-                    )
+                dict = sorted(table_players, key=lambda i: i["id"])
+                for y in range(1,5):
+                    print(f"Matchs du round n°{y}\n\n")
+                    for i in range(4):
+                        print("Joueur n°{id}    {nom}   {prenom}    {nombre_de_points}pts".format_map(
+                                dict[table_tournament.get(doc_id=num_tournament)[f"matchs_du_round_{y}"][i][0][0]-1]) + " vs " + "Joueur n°{id}    {nom}   {prenom}    {nombre_de_points}pts\n".format_map(
+                                dict[table_tournament.get(doc_id=num_tournament)[f"matchs_du_round_{y}"][i][1][0]-1])) # match, joueur, id
+
             # return to the home menu
             else:
                 break
