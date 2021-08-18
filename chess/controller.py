@@ -294,7 +294,8 @@ class RapportsController:
                 for player in range(len(table_players)):
                     print(
                         "Joueur n°{id}    nom: {nom}  prénom: {prenom}    date de naissance: {date_de_naissance}"
-                        "  sexe: {sexe}    nombre de points: {nombre_de_points}    classement: {classement}\n\n".format_map(
+                        "  sexe: {sexe}    nombre de points: {nombre_de_points}"
+                        "    classement: {classement}\n\n".format_map(
                             dict[player]
                         )
                     )
@@ -305,7 +306,8 @@ class RapportsController:
                 for player in range(len(table_players)):
                     print(
                         "Joueur n°{id}    nom: {nom}  prénom: {prenom}    date de naissance: {date_de_naissance}"
-                        "  sexe: {sexe}    nombre de points: {nombre_de_points}    classement: {classement}\n\n".format_map(
+                        "  sexe: {sexe}    nombre de points: {nombre_de_points}"
+                        "    classement: {classement}\n\n".format_map(
                             dict[player]
                         )
                     )
@@ -322,7 +324,8 @@ class RapportsController:
                 for player in range(8):
                     print(
                         "Joueur n°{id}    nom: {nom}  prénom: {prenom}    date de naissance: {date_de_naissance}"
-                        "  sexe: {sexe}    nombre de points: {nombre_de_points}    classement: {classement}\n\n".format_map(
+                        "  sexe: {sexe}    nombre de points: {nombre_de_points}"
+                        "    classement: {classement}\n\n".format_map(
                             dict[player]
                         )
                     )
@@ -341,7 +344,8 @@ class RapportsController:
                 for player in range(8):
                     print(
                         "Joueur n°{id}    nom: {nom}  prénom: {prenom}    date de naissance: {date_de_naissance}"
-                        "  sexe: {sexe}    nombre de points: {nombre_de_points}    classement: {classement}\n\n".format_map(
+                        "  sexe: {sexe}    nombre de points: {nombre_de_points}"
+                        "    classement: {classement}\n\n".format_map(
                             dict[player]
                         )
                     )

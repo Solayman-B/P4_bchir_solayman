@@ -157,7 +157,8 @@ class RapportsView:
     def new_ranking(self, player):
         ranking = check_input(
             input(
-                "Entrez le nouveau rang du joueur n°{id}    nom: {nom}  prénom: {prenom}    date de naissance: {date_de_naissance}"
+                "Entrez le nouveau rang du joueur n°{id}    nom: {nom}  prénom: {prenom}    "
+                "date de naissance: {date_de_naissance}"
                 "  sexe: {sexe}    nombre de points: {nombre_de_points}    classement: {classement}:\n>>> ".format_map(
                     player
                 )
