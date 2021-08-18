@@ -61,7 +61,7 @@ def check_input(info, key):
             return int(info)
         # number of imported players
         elif key == "players":
-            while int(info) not in range(0, len(table_players)+1):
+            while int(info) not in range(0, len(table_players) + 1):
                 info = input(
                     f"veuillez entrez un nombre compris entre 0 et {len(table_players)} svp: "
                 )
