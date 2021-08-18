@@ -290,35 +290,47 @@ class RapportsController:
             # alphabeticall sorting of all the actors
             if choice == 1:
                 print("Liste des acteurs par ordre alphabétique:\n")
-                print(sorted(table_players, key=lambda i: i["nom"]))
+                dict = sorted(table_players, key=lambda i: i["nom"])
+                for player in range(len(table_players)):
+                    print("Joueur n°{id}    nom: {nom}  prénom: {prenom}    date de naissance: {date_de_naissance}"
+                          "  sexe: {sexe}    nombre de points: {nombre_de_points}    classement: {classement}\n\n".format_map(dict[player]))
             # rank sorting of all the actors
             elif choice == 2:
                 print("Liste des acteurs par classement:\n")
-                print(sorted(table_players, key=lambda i: i["classement"]))
+                dict = sorted(table_players, key=lambda i: i["classement"])
+                for player in range(len(table_players)):
+                    print("Joueur n°{id}    nom: {nom}  prénom: {prenom}    date de naissance: {date_de_naissance}"
+                          "  sexe: {sexe}    nombre de points: {nombre_de_points}    classement: {classement}\n\n".format_map(dict[player]))
             # alphabeticall sorting of players of a tournament
             elif choice == 3:
                 num_tournament = rapport_view.tournament_number()
                 print(
                     f"Liste des joueurs du tournoi n°{num_tournament} par ordre alphabétique:\n"
                 )
-                print(
-                    sorted(
+                dict = sorted(
                         table_tournament.get(doc_id=num_tournament)["joueurs"],
                         key=lambda i: i["nom"],
                     )
-                )
+                for player in range(8):
+                    print("Joueur n°{id}    nom: {nom}  prénom: {prenom}    date de naissance: {date_de_naissance}"
+                          "  sexe: {sexe}    nombre de points: {nombre_de_points}    classement: {classement}\n\n".format_map(
+                        dict[player]))
+
             # rank sorting of players of a tournament
             elif choice == 4:
                 num_tournament = rapport_view.tournament_number()
                 print(
                     f"Liste des joueurs du tournoi n°{num_tournament} par classement:\n"
                 )
-                print(
-                    sorted(
+                dict = sorted(
                         table_tournament.get(doc_id=num_tournament)["joueurs"],
                         key=lambda i: i["classement"],
                     )
-                )
+
+                for player in range(8):
+                    print("Joueur n°{id}    nom: {nom}  prénom: {prenom}    date de naissance: {date_de_naissance}"
+                          "  sexe: {sexe}    nombre de points: {nombre_de_points}    classement: {classement}\n\n".format_map(
+                        dict[player]))
             # tournaments list
             elif choice == 5:
                 print("Liste des tournois:\n")

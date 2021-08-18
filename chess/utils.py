@@ -54,16 +54,15 @@ def check_input(info, key):
         while not info.isdigit():
             info = input("\nVeuillez entrer un chiffre svp: ")
             # points
-        if key == float:
+        if key == "float":
             return float(info)
             # number
-        elif key == int:
+        elif key == "int":
             return int(info)
         # number of imported players
         elif key == "players":
-            while int(info) not in range(0, len(table_players)):
+            while int(info) not in range(0, len(table_players)+1):
                 info = input(
-                    "\nLe nombre de joueurs à importer ne correspond pas,"
-                    "veuillez entrez un nombre compris entre 0 et {len(table_players)} svp: "
+                    f"veuillez entrez un nombre compris entre 0 et {len(table_players)} svp: "
                 )
             return int(info)

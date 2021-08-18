@@ -12,7 +12,7 @@ class HomeMenuView:
                 "\n\n4/ Quitter le programme"
                 "\n\n>>> "
             ),
-            int,
+            "int",
         )
         return choice
 
@@ -21,7 +21,7 @@ class NewGameView:
     def get_user_info(self, tournament):
         tournament.name = check_input(input("\nNom du tournoi:\n>>> "), "")
         tournament.nb_days = check_input(
-            input("\nDurée en jours du tournoi:\n>>> "), int
+            input("\nDurée en jours du tournoi:\n>>> "), "int"
         )
         tournament.location = check_input(input("\nLieu du tournoi:\n>>> "), "")
         tournament.time_control = check_input(
@@ -69,7 +69,7 @@ class PlayersView:
     # number of players
     def nb_players(self):
         nb_players = check_input(
-            input("\nCombien de joueurs voulez vous ajouter ?\n>>> "), int
+            input("\nCombien de joueurs voulez vous ajouter ?\n>>> "), "int"
         )
         return nb_players
 
@@ -81,8 +81,8 @@ class PlayersView:
             input("\nSa date de naissance sous la forme JJ/MM/AAAA:\n>>> "), ""
         )
         player.sex = check_input(input("\nSon sexe 'H' ou 'F':\n>>> "), "H")
-        player.points = check_input(input("\nSon nombre de points:\n>>> "), float)
-        player.ranking = check_input(input("\nSon rang:\n>>> "), int)
+        player.points = check_input(input("\nSon nombre de points:\n>>> "), "float")
+        player.ranking = check_input(input("\nSon rang:\n>>> "), "int")
         return {
             "nom": player.name,
             "prenom": player.surname,
@@ -100,7 +100,7 @@ class PlayersView:
         nb_imported_players = check_input(
             input(
                 "\n\nEntrez le nombre de joueurs à importer parmis la liste précédente."
-                "\n(Chiffre entre 0 et {len(table_players)})\n>>> "
+                f"\n(Chiffre entre 0 et {len(table_players)})\n>>> "
             ),
             "players",
         )
@@ -149,15 +149,15 @@ class RapportsView:
     def round_number(self):
         round = check_input(
             input("Indiquez le tour que vous souhaitez poursuivre:\n>>> "),
-            int,
+            "int",
         )
         return round
 
     # user modifying the rank of players
     def new_ranking(self, player):
         ranking = check_input(
-            input(f"Entrez le nouveau rang du joueur : {player}:\n>>> "), int
-        )
+            input("Entrez le nouveau rang du joueur n°{id}    nom: {nom}  prénom: {prenom}    date de naissance: {date_de_naissance}"
+                          "  sexe: {sexe}    nombre de points: {nombre_de_points}    classement: {classement}:\n>>> ".format_map(player)), "int")
         return ranking
 
     # user choosing the rapport he wants to be displayed
@@ -175,7 +175,7 @@ class RapportsView:
                 "\n\n8/ Retour au menu principal"
                 "\n\n>>> "
             ),
-            int,
+            "int",
         )
         return choice
 
